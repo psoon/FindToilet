@@ -1,7 +1,6 @@
 package com.example.mainactivity;
-
-import com.example.mainactivity.address_search.Document;
-import com.example.mainactivity.address_search.Meta;
+import com.example.mainactivity.category_search.Document;
+import com.example.mainactivity.category_search.Meta;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

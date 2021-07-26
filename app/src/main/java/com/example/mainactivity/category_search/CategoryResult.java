@@ -2,9 +2,6 @@ package com.example.mainactivity.category_search;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import com.example.mainactivity.address_search.Document;
-import com.example.mainactivity.address_search.Meta;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 

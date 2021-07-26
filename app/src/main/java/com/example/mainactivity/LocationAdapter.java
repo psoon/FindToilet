@@ -10,7 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.mainactivity.address_search.Document;
+import com.example.mainactivity.category_search.Document;
 
 import java.util.ArrayList;
 
@@ -58,6 +58,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
     @Override
     public void onBindViewHolder(@NonNull LocationViewHolder holder, int i) {
         final Document model = items.get(i);
+        holder.placeNameText.setText(model.getPlaceName());
         holder.addressText.setText(model.getAddressName());
     }
 
