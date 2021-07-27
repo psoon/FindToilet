@@ -1,6 +1,7 @@
 package com.example.mainactivity;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -10,11 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -25,6 +33,7 @@ import android.widget.Toast;
 import com.example.mainactivity.category_search.CategoryResult;
 import com.example.mainactivity.category_search.Document;
 
+import net.daum.mf.map.api.MapCurrentLocationMarker;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
@@ -36,11 +45,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    MapPOIItem currentMarker;
     EditText editTextQuery;
     RecyclerView recyclerview;
+    public static MapView mapView;
+    public static LocationManager lm;
     private static int REQUEST_ACCESS_FINE_LOCATION = 1000;
-    //final LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,11 +63,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(locationAdapter);
-
-        MapView mapView = new MapView(this);
+        mapView = new MapView(this);
         RelativeLayout mapViewContainer = (RelativeLayout) findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -66,29 +73,15 @@ public class MainActivity extends AppCompatActivity {
             if (permissionCheck == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
             } else {
+                lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+                if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                    gpsServiceSetting();
+                }
+                mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
             }
         } else {
-        } //위치권한 허용 묻는 팝업
 
-        final LocationListener putMarkerOnCurrentLocation = new LocationListener() {
-
-            @Override
-            public void onLocationChanged(@NonNull Location location) {
-                currentMarker = new MapPOIItem();
-
-                double longitude = location.getLongitude();
-                double latitude = location.getLatitude();
-                MapPoint mapPoint = MapPoint.mapPointWithGeoCoord(latitude, longitude);
-                currentMarker.setItemName("현재 위치");
-                currentMarker.setTag(0);
-                currentMarker.setMapPoint(mapPoint);
-                currentMarker.setMarkerType(MapPOIItem.MarkerType.BluePin);
-                mapView.addPOIItem(currentMarker);
-
-
-            }
-        };
-
+        } //위치권한 허용 묻는 코드
 
         editTextQuery.addTextChangedListener(new TextWatcher() {
             @Override
@@ -145,4 +138,25 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this,"현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
         }
     }
+
+    public void gpsServiceSetting(){
+        androidx.appcompat.app.AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("gps 비활성화");
+        builder.setMessage("현재 위치를 가져오기 위해 gps를 활성화 하시겠습니까?");
+        builder.setPositiveButton("활성화", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent gpsSetting = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(gpsSetting);
+            }
+        });
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
+    }
+
 }

@@ -14,6 +14,7 @@ public class IntroActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_intro);
+
         IntroThread introThread = new IntroThread(handler);
         introThread.start();
     }
@@ -27,4 +28,6 @@ public class IntroActivity extends AppCompatActivity {
             }
         }
     };
+
+
 }
