@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity {
         mapView = new MapView(this);
         RelativeLayout mapViewContainer = (RelativeLayout) findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
+        lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -73,16 +74,10 @@ public class MainActivity extends AppCompatActivity {
             if (permissionCheck == PackageManager.PERMISSION_DENIED) {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
             } else {
-                lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-                if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-                    gpsServiceSetting();
-                }
-                mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+                moveOnCurrentLocation();
             }
         } else {
-
         } //위치권한 허용 묻는 코드
-
         editTextQuery.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -133,6 +128,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
             Toast.makeText(this,"위치 권한이 허용되었습니다", Toast.LENGTH_SHORT).show();
+            moveOnCurrentLocation();
         }
         else{
             Toast.makeText(this,"현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
@@ -157,6 +153,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         builder.create().show();
+    }
+    public void moveOnCurrentLocation(){
+        if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            gpsServiceSetting();
+        }
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
     }
 
 }
