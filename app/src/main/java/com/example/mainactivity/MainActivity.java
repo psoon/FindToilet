@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
 
         MapCircle circle1 = new MapCircle(
                 MapPoint.mapPointWithGeoCoord(latitude, longitude), // center
-                350, // radius
+                500, // radius
                 Color.argb(128, 0, 0, 0), // strokeColor
                 Color.argb(40, 0, 0, 255) // fillColor
         );
