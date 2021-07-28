@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,9 +34,12 @@ import android.widget.Toast;
 import com.example.mainactivity.category_search.CategoryResult;
 import com.example.mainactivity.category_search.Document;
 
+import net.daum.mf.map.api.CameraUpdateFactory;
+import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapCurrentLocationMarker;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
@@ -50,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     public static MapView mapView;
     public static LocationManager lm;
     private static int REQUEST_ACCESS_FINE_LOCATION = 1000;
+    private GpsTracker gpsTracker;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +72,7 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout mapViewContainer = (RelativeLayout) findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
         lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -121,6 +127,22 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Circle
+        gpsTracker = new GpsTracker(MainActivity.this);
+
+        double latitude = gpsTracker.getLatitude();
+        double longitude = gpsTracker.getLongitude();
+
+        MapCircle circle1 = new MapCircle(
+                MapPoint.mapPointWithGeoCoord(latitude, longitude), // center
+                350, // radius
+                Color.argb(128, 0, 0, 0), // strokeColor
+                Color.argb(40, 0, 0, 255) // fillColor
+        );
+        circle1.setTag(1234);
+        mapView.addCircle(circle1);
+
+        //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
     @Override
