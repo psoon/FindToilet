@@ -39,14 +39,9 @@ public class IntroActivity extends AppCompatActivity {
                     for (int o = 0; o < 19; o++) {
                         dataArr[row][o] = token[o];
                     }
-                    for(int o = 0;o<19;o++) {
-                        System.out.print(dataArr[row][o]+",");
-                    }
-                    System.out.println("");
                     row++;
                 }
             }
-            System.out.println("###############################"+dataArr.length+"########################");
 
 
         } catch (Exception e) {
