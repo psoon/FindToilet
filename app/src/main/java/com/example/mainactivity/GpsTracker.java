@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -13,6 +14,11 @@ import android.os.IBinder;
 import androidx.core.content.ContextCompat;
 import android.util.Log;
 
+import net.daum.mf.map.api.MapCircle;
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
+
+import static com.example.mainactivity.MainActivity.mapView;
 
 
 public class GpsTracker extends Service implements LocationListener {
@@ -23,7 +29,7 @@ public class GpsTracker extends Service implements LocationListener {
     double longitude;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
-    private static final long MIN_TIME_BW_UPDATES = 1000 * 60 * 1;
+    private static final long MIN_TIME_BW_UPDATES = 1000;
     protected LocationManager locationManager;
 
 
@@ -52,8 +58,6 @@ public class GpsTracker extends Service implements LocationListener {
 
                 if (hasFineLocationPermission == PackageManager.PERMISSION_GRANTED &&
                         hasCoarseLocationPermission == PackageManager.PERMISSION_GRANTED) {
-
-                    ;
                 } else
                     return null;
 
@@ -93,10 +97,7 @@ public class GpsTracker extends Service implements LocationListener {
                 }
             }
         }
-        catch (Exception e)
-        {
-            Log.d("@@@", ""+e.toString());
-        }
+        catch (Exception e) { }
 
         return location;
     }
@@ -124,6 +125,34 @@ public class GpsTracker extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location)
     {
+
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+        mapView.removeAllPOIItems();
+        mapView.removeAllCircles();
+        MapCircle circle1 = new MapCircle(
+                MapPoint.mapPointWithGeoCoord(latitude, longitude), // center
+                700, // radius
+                Color.argb(128, 0, 0, 0), // strokeColor
+                Color.argb(40, 0, 0, 255) // fillColor
+        );
+        mapView.addCircle(circle1);
+        circle1.setCenter(MapPoint.mapPointWithGeoCoord(latitude, longitude));
+
+
+        for(int i = 0; i<MainActivity.dataArr.length; i++){
+            if(!MainActivity.dataArr[i][17].isEmpty() && !MainActivity.dataArr[i][18].isEmpty()){
+                if(MainActivity.distance(latitude, longitude, Double.parseDouble(MainActivity.dataArr[i][17]), Double.parseDouble(MainActivity.dataArr[i][18])) <= 700){
+                    MapPOIItem marker = new MapPOIItem();
+                    marker.setItemName(MainActivity.dataArr[i][1]);
+                    marker.setTag(i);
+                    marker.setMapPoint(MapPoint.mapPointWithGeoCoord(Double.parseDouble(MainActivity.dataArr[i][17]), Double.parseDouble(MainActivity.dataArr[i][18])));
+                    marker.setMarkerType(MapPOIItem.MarkerType.BluePin);
+                    marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+                    mapView.addPOIItem(marker);
+                }
+            }
+        }
     }
 
     @Override

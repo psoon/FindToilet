@@ -16,6 +16,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,9 +34,12 @@ import android.widget.Toast;
 import com.example.mainactivity.category_search.CategoryResult;
 import com.example.mainactivity.category_search.Document;
 
+import net.daum.mf.map.api.CameraUpdateFactory;
+import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapCurrentLocationMarker;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapPointBounds;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
@@ -50,13 +54,15 @@ public class MainActivity extends AppCompatActivity {
     public static MapView mapView;
     public static LocationManager lm;
     private static int REQUEST_ACCESS_FINE_LOCATION = 1000;
+    private GpsTracker gpsTracker;
+    public static String[][] dataArr = new String[35754][19];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         ArrayList<Document> documentArrayList = new ArrayList<>();
-        editTextQuery = (EditText) findViewById(R.id.editTextQuery);
+        editTextQuery = findViewById(R.id.editTextQuery);
         recyclerview = findViewById(R.id.main_recyclerview);
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -64,9 +70,10 @@ public class MainActivity extends AppCompatActivity {
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(locationAdapter);
         mapView = new MapView(this);
-        RelativeLayout mapViewContainer = (RelativeLayout) findViewById(R.id.map_view);
+        RelativeLayout mapViewContainer = findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
         lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -76,8 +83,11 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 moveOnCurrentLocation();
             }
-        } else {
-        } //위치권한 허용 묻는 코드
+        } else { } //위치권한 허용 묻는 코드
+        gpsTracker = new GpsTracker(MainActivity.this);
+
+
+
         editTextQuery.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -160,5 +170,21 @@ public class MainActivity extends AppCompatActivity {
         }
         mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
     }
+    public static double distance(double latitude1, double longitude1, double latitude2, double longitude2) {
 
+        double theta = longitude1 - longitude2;
+        double dist = Math.sin(deg2rad(latitude1)) * Math.sin(deg2rad(latitude2)) + Math.cos(deg2rad(latitude1)) * Math.cos(deg2rad(latitude2)) * Math.cos(deg2rad(theta));
+
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515 * 1609.344;
+        dist = Math.abs(dist);
+        return dist;
+    }
+    private static double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
+    private static double rad2deg(double rad) {
+        return (rad * 180 / Math.PI);
+    }
 }

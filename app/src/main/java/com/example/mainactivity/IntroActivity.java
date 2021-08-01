@@ -11,6 +11,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.widget.Toast;
 
+import com.opencsv.CSVReader;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -20,7 +22,6 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 
 public class IntroActivity extends AppCompatActivity {
-    public static String[][] dataArr = new String[35754][19];
     String filename = "dataset";
     int row = 0;
 
@@ -31,16 +32,15 @@ public class IntroActivity extends AppCompatActivity {
         AssetManager assetManager = getResources().getAssets();
         try {
             for(int i = 1; i<4; i++){
-                BufferedReader br = new BufferedReader(new InputStreamReader(assetManager.open(filename + i + ".csv"),"euc-kr"));
-                String line = "";
-
-                while((line = br.readLine()) != null) {
-                    String[] token = line.split(",", -1);
-                    for (int o = 0; o < 19; o++) {
-                        dataArr[row][o] = token[o];
+                CSVReader reader = new CSVReader(new BufferedReader(new InputStreamReader(assetManager.open(filename + i + ".csv"),"euc-kr")));
+                String[] nextLine;
+                while((nextLine = reader.readNext()) != null){
+                    for(int o = 0; o < 19; o++){
+                        MainActivity.dataArr[row][o] = nextLine[o];
                     }
                     row++;
                 }
+
             }
 
 

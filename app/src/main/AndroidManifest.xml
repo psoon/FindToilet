@@ -27,7 +27,7 @@
             android:resource="@xml/network_security_config" />
         <meta-data
             android:name="com.kakao.sdk.AppKey"
-            android:value="65e067eb9c8e7f32c3b89c369f7fab3a" />
+            android:value="d554a2b2e9bcd73aeb57b4f63ccd132d" />
         <activity android:name=".Filter"/>
     </application>
 
