@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="10dp"
+        android:lines="1"
+        android:textSize="25sp"
+        android:text="성별"
+        android:drawableLeft="@drawable/filter1"
+        android:drawablePadding="10dp"
+        android:orientation="horizontal"/>
+        <CheckBox
+            android:layout_marginLeft="15dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="여자"></CheckBox>
+        <CheckBox
+            android:layout_marginLeft="15dp"
+            android:padding="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="남자"></CheckBox>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:lines="1"
+        android:textSize="25sp"
+        android:text="변기"
+        android:drawableLeft="@drawable/filter2"
+        android:drawablePadding="10dp"
+        android:orientation="horizontal"/>
+    <CheckBox
+        android:layout_marginLeft="15dp"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="소변기"></CheckBox>
+    <CheckBox
+        android:layout_marginLeft="15dp"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="대변기"></CheckBox>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="10dp"
+        android:lines="1"
+        android:textSize="25sp"
+        android:text="편의시설"
+        android:drawableLeft="@drawable/filter3"
+        android:drawablePadding="10dp"
+        android:orientation="horizontal"/>
+    <CheckBox
+        android:layout_marginLeft="15dp"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="장애시설"></CheckBox>
+    <CheckBox
+        android:layout_marginLeft="15dp"
+        android:padding="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="유아용 변기"></CheckBox>
+
+</LinearLayout>
