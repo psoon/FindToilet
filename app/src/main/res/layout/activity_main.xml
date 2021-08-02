@@ -11,7 +11,8 @@
             android:layout_height="40dp"
             android:layout_margin="5dp"
             android:src="@drawable/bar"
-            android:id="@+id/btn_filter"/>
+            android:id="@+id/btn_filter"
+            android:onClick="btn_filter_onClick"/>
 
         <EditText
             android:layout_width="wrap_content"

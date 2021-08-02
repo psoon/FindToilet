@@ -27,6 +27,8 @@ public class GpsTracker extends Service implements LocationListener {
     Location location;
     double latitude;
     double longitude;
+    public static int radius = 700;
+    public static MapCircle circle1;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000;
@@ -130,29 +132,15 @@ public class GpsTracker extends Service implements LocationListener {
         double longitude = location.getLongitude();
         mapView.removeAllPOIItems();
         mapView.removeAllCircles();
-        MapCircle circle1 = new MapCircle(
+        circle1 = new MapCircle(
                 MapPoint.mapPointWithGeoCoord(latitude, longitude), // center
-                700, // radius
+                radius, // radius
                 Color.argb(128, 0, 0, 0), // strokeColor
                 Color.argb(40, 0, 0, 255) // fillColor
         );
         mapView.addCircle(circle1);
         circle1.setCenter(MapPoint.mapPointWithGeoCoord(latitude, longitude));
-
-
-        for(int i = 0; i<MainActivity.dataArr.length; i++){
-            if(!MainActivity.dataArr[i][17].isEmpty() && !MainActivity.dataArr[i][18].isEmpty()){
-                if(MainActivity.distance(latitude, longitude, Double.parseDouble(MainActivity.dataArr[i][17]), Double.parseDouble(MainActivity.dataArr[i][18])) <= 700){
-                    MapPOIItem marker = new MapPOIItem();
-                    marker.setItemName(MainActivity.dataArr[i][1]);
-                    marker.setTag(i);
-                    marker.setMapPoint(MapPoint.mapPointWithGeoCoord(Double.parseDouble(MainActivity.dataArr[i][17]), Double.parseDouble(MainActivity.dataArr[i][18])));
-                    marker.setMarkerType(MapPOIItem.MarkerType.BluePin);
-                    marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
-                    mapView.addPOIItem(marker);
-                }
-            }
-        }
+        markerUpdate(latitude, longitude);
     }
 
     @Override
@@ -176,12 +164,20 @@ public class GpsTracker extends Service implements LocationListener {
         return null;
     }
 
-
-    public void stopUsingGPS()
-    {
-        if(locationManager != null)
-        {
-            locationManager.removeUpdates(GpsTracker.this);
+    public static void markerUpdate(double latitude, double longitude){
+        for(int i = 0; i<MainActivity.dataArr.length; i++){
+            if(!MainActivity.dataArr[i][17].isEmpty() && !MainActivity.dataArr[i][18].isEmpty()){
+                if(MainActivity.distance(latitude, longitude, Double.parseDouble(MainActivity.dataArr[i][17]), Double.parseDouble(MainActivity.dataArr[i][18])) <= radius){
+                    MapPOIItem marker = new MapPOIItem();
+                    marker.setItemName(MainActivity.dataArr[i][1]);
+                    marker.setTag(i);
+                    marker.setMapPoint(MapPoint.mapPointWithGeoCoord(Double.parseDouble(MainActivity.dataArr[i][17]), Double.parseDouble(MainActivity.dataArr[i][18])));
+                    marker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
+                    marker.setCustomImageResourceId(R.drawable.marker_toilet);
+                    marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
+                    mapView.addPOIItem(marker);
+                }
+            }
         }
     }
 

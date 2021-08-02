@@ -27,7 +27,9 @@ import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
@@ -51,10 +53,11 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     EditText editTextQuery;
     RecyclerView recyclerview;
+    ImageButton btn_filter;
     public static MapView mapView;
     public static LocationManager lm;
     private static int REQUEST_ACCESS_FINE_LOCATION = 1000;
-    private GpsTracker gpsTracker;
+    public static GpsTracker gpsTracker;
     public static String[][] dataArr = new String[35754][19];
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Document> documentArrayList = new ArrayList<>();
         editTextQuery = findViewById(R.id.editTextQuery);
         recyclerview = findViewById(R.id.main_recyclerview);
+        btn_filter = findViewById(R.id.btn_filter);
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -186,5 +190,10 @@ public class MainActivity extends AppCompatActivity {
     }
     private static double rad2deg(double rad) {
         return (rad * 180 / Math.PI);
+    }
+
+    public void btn_filter_onClick(View view) {
+        Intent intent = new Intent(this, Filter.class);
+        startActivity(intent);
     }
 }
