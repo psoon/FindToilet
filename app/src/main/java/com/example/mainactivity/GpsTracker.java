@@ -12,7 +12,6 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.IBinder;
 import androidx.core.content.ContextCompat;
-import android.util.Log;
 
 import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
@@ -28,7 +27,7 @@ public class GpsTracker extends Service implements LocationListener {
     double latitude;
     double longitude;
     public static int radius = 700;
-    public static MapCircle circle1;
+    public static MapCircle circleByGPS;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000;
@@ -132,14 +131,14 @@ public class GpsTracker extends Service implements LocationListener {
         double longitude = location.getLongitude();
         mapView.removeAllPOIItems();
         mapView.removeAllCircles();
-        circle1 = new MapCircle(
+        circleByGPS = new MapCircle(
                 MapPoint.mapPointWithGeoCoord(latitude, longitude), // center
                 radius, // radius
                 Color.argb(128, 0, 0, 0), // strokeColor
                 Color.argb(40, 0, 0, 255) // fillColor
         );
-        mapView.addCircle(circle1);
-        circle1.setCenter(MapPoint.mapPointWithGeoCoord(latitude, longitude));
+        mapView.addCircle(circleByGPS);
+        circleByGPS.setCenter(MapPoint.mapPointWithGeoCoord(latitude, longitude));
         markerUpdate(latitude, longitude);
     }
 
