@@ -7,30 +7,29 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="40dp"
         android:layout_marginLeft="10dp"
         android:lines="1"
         android:textSize="25sp"
-        android:text="성별"
+        android:text="남여공용 여부"
         android:drawableLeft="@drawable/filter1"
         android:drawablePadding="10dp"
         android:orientation="horizontal"/>
         <CheckBox
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="30dp"
             android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="여자"></CheckBox>
+            android:text="공용"></CheckBox>
         <CheckBox
-            android:layout_marginLeft="15dp"
+            android:layout_marginLeft="30dp"
             android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="남자"></CheckBox>
+            android:text="분리"></CheckBox>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
         android:layout_marginLeft="10dp"
         android:lines="1"
         android:textSize="25sp"
@@ -95,6 +94,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="적용"
+                android:backgroundTint="#216188"
                 android:onClick="btn_radius_onclick">
             </Button>
         </LinearLayout>

@@ -134,8 +134,8 @@ public class GpsTracker extends Service implements LocationListener {
         circleByGPS = new MapCircle(
                 MapPoint.mapPointWithGeoCoord(latitude, longitude), // center
                 radius, // radius
-                Color.argb(128, 0, 0, 0), // strokeColor
-                Color.argb(40, 0, 0, 255) // fillColor
+                Color.argb(0, 0, 0, 0), // strokeColor
+                Color.argb(30, 0, 0, 255) // fillColor
         );
         mapView.addCircle(circleByGPS);
         circleByGPS.setCenter(MapPoint.mapPointWithGeoCoord(latitude, longitude));
