@@ -42,7 +42,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
-    EditText editTextQuery;
+    public static EditText editTextQuery;
     RecyclerView recyclerview;
     ImageButton btn_filter;
     public static MapView mapView;
@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity {
         mapViewContainer.addView(mapView);
         lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
 
+        gpsTracker = new GpsTracker(MainActivity.this);
+
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -81,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 moveOnCurrentLocation();
             }
         } else { } //위치권한 허용 묻는 코드
-        gpsTracker = new GpsTracker(MainActivity.this);
+
 
         editTextQuery.addTextChangedListener(new TextWatcher() {
             @Override
@@ -238,7 +240,8 @@ public class MainActivity extends AppCompatActivity {
         if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             gpsServiceSetting();
         }
-        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeading);
+        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
+        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(gpsTracker.getLatitude(), gpsTracker.getLongitude()), true);
     }
     public static double distance(double latitude1, double longitude1, double latitude2, double longitude2) {
 

@@ -1,6 +1,7 @@
 package com.example.mainactivity;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +13,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainactivity.category_search.Document;
 
+import net.daum.mf.map.api.MapCircle;
+import net.daum.mf.map.api.MapPOIItem;
+import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapView;
+
 import java.util.ArrayList;
 
+import static com.example.mainactivity.MainActivity.default_Latitude;
+import static com.example.mainactivity.MainActivity.default_Longitude;
+
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
+    MapCircle circleBySearch;
     Context context;
     ArrayList<Document> items;
     EditText editText;
@@ -71,6 +81,38 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
             super(itemView);
             placeNameText = itemView.findViewById(R.id.ltem_location_tv_placename);
             addressText = itemView.findViewById(R.id.ltem_location_tv_address);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int pos = getAdapterPosition();
+                    if(pos != RecyclerView.NO_POSITION){
+                        MainActivity.editTextQuery.setText("");
+                        MainActivity.gpsTracker.stopUsingGPS();
+                        MainActivity.mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
+                        MainActivity.mapView.removeAllPOIItems();
+                        MainActivity.mapView.removeAllCircles();
+                        Document item = items.get(pos);
+                        double latitude = Double.parseDouble(item.getY());
+                        double longitude = Double.parseDouble(item.getX());
+                        default_Latitude = latitude;
+                        default_Longitude = longitude;
+
+
+                        MainActivity.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude), true);
+                        circleBySearch = new MapCircle(
+                                MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude), // center
+                                GpsTracker.radius, // radius
+                                Color.argb(128, 0, 0, 0), // strokeColor
+                                Color.argb(40, 0, 0, 255) // fillColor
+                        );
+                        MainActivity.mapView.addCircle(circleBySearch);
+                        circleBySearch.setCenter(MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude));
+                        GpsTracker.markerUpdate(default_Latitude, default_Longitude);
+
+                    }
+                }
+            });
         }
     }
 }

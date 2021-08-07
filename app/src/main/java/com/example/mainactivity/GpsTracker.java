@@ -162,6 +162,7 @@ public class GpsTracker extends Service implements LocationListener {
     {
         return null;
     }
+    public void stopUsingGPS() { if(locationManager != null) { locationManager.removeUpdates(this); } }
 
     public static void markerUpdate(double latitude, double longitude){
         for(int i = 0; i<MainActivity.dataArr.length; i++){
@@ -179,6 +180,5 @@ public class GpsTracker extends Service implements LocationListener {
             }
         }
     }
-
 
 }

@@ -43,6 +43,7 @@
             android:visibility="gone">
         </androidx.recyclerview.widget.RecyclerView>
     </LinearLayout>
+
     <RelativeLayout
         android:id="@+id/map_view"
         android:layout_width="match_parent"

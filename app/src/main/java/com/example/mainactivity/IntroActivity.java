@@ -2,10 +2,15 @@ package com.example.mainactivity;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -43,11 +48,9 @@ public class IntroActivity extends AppCompatActivity {
 
             }
 
-
         } catch (Exception e) {
             Toast.makeText(this,e.toString(), Toast.LENGTH_SHORT).show();
         }
-
         IntroThread introThread = new IntroThread(handler);
         introThread.start();
     }
