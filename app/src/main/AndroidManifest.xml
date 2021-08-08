@@ -14,6 +14,8 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MainActivity"
         android:usesCleartextTraffic="true">
+        <activity android:name=".loginActivity"></activity>
+        <activity android:name=".joinUsActivity" />
         <activity android:name=".IntroActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,14 +23,16 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".MainActivity" />
+
         <meta-data
             android:name="com.google.android.actions"
             android:resource="@xml/network_security_config" />
         <meta-data
             android:name="com.kakao.sdk.AppKey"
             android:value="d554a2b2e9bcd73aeb57b4f63ccd132d" />
-        <activity android:name=".Filter"/>
+
+        <activity android:name=".Filter" />
     </application>
 
 </manifest>

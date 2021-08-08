@@ -1,15 +1,5 @@
 package com.example.mainactivity;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -28,8 +18,21 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.mainactivity.category_search.CategoryResult;
 import com.example.mainactivity.category_search.Document;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.FirebaseDatabase;
+
 import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
@@ -56,6 +59,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FirebaseApp.initializeApp(this);
 
         ArrayList<Document> documentArrayList = new ArrayList<>();
         editTextQuery = findViewById(R.id.editTextQuery);
@@ -265,4 +270,14 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, Filter.class);
         startActivity(intent);
     }
+
+//    public void login(View view) {
+//        Intent intent = new Intent(this, loginActivity.class);
+//        startActivity(intent);
+//    }
+//
+//    public void join(View view) {
+//        Intent intent = new Intent(this, joinUsActivity.class);
+//        startActivity(intent);
+//    }
 }

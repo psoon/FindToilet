@@ -20,20 +20,22 @@
         <RadioButton
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="아이디/비밀번호입력"/>
+            android:text="이메일/비밀번호입력"/>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_login_id"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
-                android:hint="아이디"/>
+                android:hint="이메일"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/et_login_pw"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:hint="비밀번호"/>
@@ -43,6 +45,7 @@
             android:layout_height="wrap_content"
             android:text="자동 로그인"/>
         <Button
+            android:id="@+id/btn_login"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
