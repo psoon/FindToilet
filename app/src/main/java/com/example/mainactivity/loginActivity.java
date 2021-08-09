@@ -27,7 +27,6 @@ public class loginActivity extends AppCompatActivity {
         login_id = findViewById(R.id.et_login_id);
         login_pw = findViewById(R.id.et_login_pw);
         btn_login = findViewById(R.id.btn_login);
-        FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
 
         btn_login.setOnClickListener(new View.OnClickListener() {
@@ -39,6 +38,7 @@ public class loginActivity extends AppCompatActivity {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if(task.isSuccessful()){
+                            Toast.makeText(loginActivity.this, "로그인 성공!", Toast.LENGTH_SHORT).show();
                             //로그인 후 돌아갈 인텐트 추가해야함
                         }else{
                             Toast.makeText(loginActivity.this, "이메일 혹은 비밀번호가 틀렸습니다.", Toast.LENGTH_SHORT).show();

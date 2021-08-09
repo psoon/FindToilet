@@ -39,7 +39,7 @@
                 android:layout_height="50dp"
                 android:layout_margin="5dp"
                 android:background="@drawable/edittext_rounded"
-                android:hint="비밀번호 입력"/>
+                android:hint="비밀번호 입력 (6자리 이상)"/>
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

@@ -126,9 +126,10 @@ public class GpsTracker extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location)
     {
-
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
+        MainActivity.default_Latitude = latitude;
+        MainActivity.default_Longitude = longitude;
         mapView.removeAllPOIItems();
         mapView.removeAllCircles();
         circleByGPS = new MapCircle(

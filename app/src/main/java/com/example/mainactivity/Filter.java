@@ -58,13 +58,13 @@ public class Filter extends AppCompatActivity {
                     GpsTracker.radius = radius;
                     circleByGPS.setRadius(radius);
                     circleByGPS = new MapCircle(
-                            MapPoint.mapPointWithGeoCoord(MainActivity.gpsTracker.getLatitude(), MainActivity.gpsTracker.getLongitude()), // center
+                            MapPoint.mapPointWithGeoCoord(MainActivity.default_Latitude, MainActivity.default_Longitude), // center
                             GpsTracker.radius, // radius
                             Color.argb(128, 0, 0, 0), // strokeColor
                             Color.argb(40, 0, 0, 255) // fillColor
                     );
                     mapView.addCircle(circleByGPS);
-                    GpsTracker.markerUpdate(MainActivity.gpsTracker.getLatitude(), MainActivity.gpsTracker.getLongitude());
+                    GpsTracker.markerUpdate(MainActivity.default_Latitude, MainActivity.default_Longitude);
                     edit_radius.setText("");
                     edit_radius.setHint("현재설정 : " + GpsTracker.radius + "m");
                 }

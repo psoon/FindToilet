@@ -19,10 +19,11 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
-import java.util.HashMap;
+import org.apache.commons.lang3.ObjectUtils;
 
 public class joinUsActivity extends AppCompatActivity {
-    private DatabaseReference mDatabase;
+    private FirebaseDatabase mDatabase;
+    private DatabaseReference databaseReference;
     private FirebaseAuth mAuth;
     TextInputEditText etUserId, etUserPw, etUserPwCheck, etUserNickname, etUserPhoneNumber;
     @Override
@@ -30,17 +31,15 @@ public class joinUsActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.join_us);
-        FirebaseApp.initializeApp(this);
-        mDatabase = FirebaseDatabase.getInstance().getReference("Users");
         etUserId = findViewById(R.id.et_user_id);
         etUserPw = findViewById(R.id.et_user_pw);
         etUserPwCheck = findViewById(R.id.et_user_pw_check);
         etUserNickname = findViewById(R.id.et_user_nickname);
         etUserPhoneNumber = findViewById(R.id.et_user_phonenumber);
 
-        mDatabase = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
-
+        mDatabase = FirebaseDatabase.getInstance();
+        databaseReference = mDatabase.getReference();
     }
 
     public void btn_join_onclick(View view) {
@@ -54,7 +53,7 @@ public class joinUsActivity extends AppCompatActivity {
             ProgressDialog dialog = new ProgressDialog(this);
             dialog.setMessage("진행중입니다...");
             dialog.show();
-            mAuth.createUserWithEmailAndPassword(userId, userPw).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            mAuth.createUserWithEmailAndPassword(userId, userPw).addOnCompleteListener(joinUsActivity.this, new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
@@ -62,30 +61,39 @@ public class joinUsActivity extends AppCompatActivity {
 
                         FirebaseUser user = mAuth.getCurrentUser();
                         String email = user.getEmail();
-                        String uid = user.getUid();
-                        String name = userNickname;
-                        String phonenumber = userPhoneNumber;
+                        String uid = task.getResult().getUser().getUid();
 
-                        HashMap hashMap = new HashMap<>();
-                        hashMap.put("uid", uid);
-                        hashMap.put("email",email);
-                        hashMap.put("name",name);
-                        hashMap.put("phonenumber", phonenumber);
+                        UserModel userModel = new UserModel();
+                        userModel.nickName = userNickname;
+                        userModel.phoneNumber = userPhoneNumber;
+                        userModel.uid = uid;
 
-                        mDatabase.setValue(hashMap);
-                        Intent intent = new Intent(joinUsActivity.this, loginActivity.class);
-                        startActivity(intent);
-                        finish();
-                        Toast.makeText(joinUsActivity.this,"회원가입이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                        mDatabase.getReference().child("Users").child(uid).setValue(userModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Toast.makeText(joinUsActivity.this,"회원가입이 완료되었습니다.", Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(joinUsActivity.this, loginActivity.class);
+                                startActivity(intent);
+                                finish();
+                            }
+                        });
                     }else{
                         dialog.dismiss();
-                        Toast.makeText(joinUsActivity.this, "중복된 이메일 입니다.", Toast.LENGTH_SHORT).show();
+                        if(!userId.contains("@")){
+                            Toast.makeText(joinUsActivity.this, "올바른 이메일 형식이 아닙니다", Toast.LENGTH_SHORT).show();
+                        }
+                        else if(userPw.length() < 6){
+                            Toast.makeText(joinUsActivity.this, "비밀번호는 6자리 이상이어야 합니다", Toast.LENGTH_SHORT).show();
+                        }
+                        else{
+                            Toast.makeText(joinUsActivity.this, task.getException().toString(), Toast.LENGTH_SHORT).show();
+                        }
                         return;
                     }
                 }
             });
         }else{
-            Toast.makeText(joinUsActivity.this, "비밀번호가 틀렸습니다. 다시 입력해 주세요.", Toast.LENGTH_SHORT).show();
+            Toast.makeText(joinUsActivity.this, "비밀번호가 일치하지 않습니다. 다시 입력해 주세요.", Toast.LENGTH_SHORT).show();
             return;
         }
     }
