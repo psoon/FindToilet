@@ -75,6 +75,8 @@ public class GpsTracker extends Service implements LocationListener {
                         {
                             latitude = location.getLatitude();
                             longitude = location.getLongitude();
+                            MainActivity.current_latitude = latitude;
+                            MainActivity.current_longitude = longitude;
                         }
                     }
                 }
@@ -92,6 +94,8 @@ public class GpsTracker extends Service implements LocationListener {
                             {
                                 latitude = location.getLatitude();
                                 longitude = location.getLongitude();
+                                MainActivity.current_latitude = latitude;
+                                MainActivity.current_longitude = longitude;
                             }
                         }
                     }
@@ -128,8 +132,8 @@ public class GpsTracker extends Service implements LocationListener {
     {
         double latitude = location.getLatitude();
         double longitude = location.getLongitude();
-        MainActivity.default_Latitude = latitude;
-        MainActivity.default_Longitude = longitude;
+        MainActivity.current_latitude = latitude;
+        MainActivity.current_longitude = longitude;
         mapView.removeAllPOIItems();
         mapView.removeAllCircles();
         circleByGPS = new MapCircle(

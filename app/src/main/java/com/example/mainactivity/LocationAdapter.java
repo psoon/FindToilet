@@ -14,14 +14,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mainactivity.category_search.Document;
 
 import net.daum.mf.map.api.MapCircle;
-import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 import java.util.ArrayList;
 
-import static com.example.mainactivity.MainActivity.default_Latitude;
-import static com.example.mainactivity.MainActivity.default_Longitude;
+import static com.example.mainactivity.MainActivity.current_latitude;
+import static com.example.mainactivity.MainActivity.current_longitude;
 
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.LocationViewHolder> {
     MapCircle circleBySearch;
@@ -95,20 +94,20 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                         Document item = items.get(pos);
                         double latitude = Double.parseDouble(item.getY());
                         double longitude = Double.parseDouble(item.getX());
-                        default_Latitude = latitude;
-                        default_Longitude = longitude;
+                        current_latitude = latitude;
+                        current_longitude = longitude;
 
 
-                        MainActivity.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude), true);
+                        MainActivity.mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude), true);
                         circleBySearch = new MapCircle(
-                                MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude), // center
+                                MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude), // center
                                 GpsTracker.radius, // radius
                                 Color.argb(128, 0, 0, 0), // strokeColor
                                 Color.argb(40, 0, 0, 255) // fillColor
                         );
                         MainActivity.mapView.addCircle(circleBySearch);
-                        circleBySearch.setCenter(MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude));
-                        GpsTracker.markerUpdate(default_Latitude, default_Longitude);
+                        circleBySearch.setCenter(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude));
+                        GpsTracker.markerUpdate(current_latitude, current_longitude);
 
                     }
                 }

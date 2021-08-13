@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -30,8 +31,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.mainactivity.category_search.CategoryResult;
 import com.example.mainactivity.category_search.Document;
 import com.google.firebase.FirebaseApp;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 
 import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
@@ -47,13 +46,13 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     public static EditText editTextQuery;
     RecyclerView recyclerview;
-    ImageButton btn_filter;
+    ImageButton btn_filter, btn_refresh;
     public static MapView mapView;
     public static LocationManager lm;
     private static int REQUEST_ACCESS_FINE_LOCATION = 1000;
     public static GpsTracker gpsTracker;
     public static String[][] dataArr = new String[35754][19];
-    public static double default_Latitude = 37.5665, default_Longitude = 126.9780;
+    public static double current_latitude = 37.5665, current_longitude = 126.9780;
     public static MapCircle circleByLocal;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
         editTextQuery = findViewById(R.id.editTextQuery);
         recyclerview = findViewById(R.id.main_recyclerview);
         btn_filter = findViewById(R.id.btn_filter);
+        btn_refresh = findViewById(R.id.btn_refresh);
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -75,19 +75,9 @@ public class MainActivity extends AppCompatActivity {
         RelativeLayout mapViewContainer = findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
         lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
+        //화면구성 및 변수 초기화
 
-        gpsTracker = new GpsTracker(MainActivity.this);
-
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
-
-            if (permissionCheck == PackageManager.PERMISSION_DENIED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
-            } else {
-                moveOnCurrentLocation();
-            }
-        } else { } //위치권한 허용 묻는 코드
+        askPermission();
 
 
         editTextQuery.addTextChangedListener(new TextWatcher() {
@@ -133,6 +123,16 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        btn_refresh.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mapViewContainer.removeAllViews();
+                mapView = new MapView(MainActivity.this);
+                mapViewContainer.addView(mapView);
+                moveOnCurrentLocation();
+            }
+        });
     }
 
     @Override
@@ -163,16 +163,16 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 Toast.makeText(MainActivity.this,"위치정보를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
                 if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-                    mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude), true);
+                    mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude), true);
                     circleByLocal = new MapCircle(
-                            MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude), // center
+                            MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude), // center
                             GpsTracker.radius, // radius
                             Color.argb(128, 0, 0, 0), // strokeColor
                             Color.argb(40, 0, 0, 255) // fillColor
                     );
                     mapView.addCircle(circleByLocal);
-                    circleByLocal.setCenter(MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude));
-                    GpsTracker.markerUpdate(default_Latitude, default_Longitude);
+                    circleByLocal.setCenter(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude));
+                    GpsTracker.markerUpdate(current_latitude, current_longitude);
 
                     mapView.setMapViewEventListener(new MapView.MapViewEventListener() {
                         @Override
@@ -183,11 +183,11 @@ public class MainActivity extends AppCompatActivity {
                         public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
                             mapView = MainActivity.mapView;
                             mapView.removeAllPOIItems();
-                            default_Latitude = mapPoint.getMapPointGeoCoord().latitude;
-                            default_Longitude = mapPoint.getMapPointGeoCoord().longitude;
+                            current_latitude = mapPoint.getMapPointGeoCoord().latitude;
+                            current_longitude = mapPoint.getMapPointGeoCoord().longitude;
                             mapView.removeCircle(circleByLocal);
                             circleByLocal = new MapCircle(
-                                    MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude),
+                                    MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude),
                                     GpsTracker.radius,
                                     Color.argb(128, 0, 0, 0), // strokeColor
                                     Color.argb(40, 0, 0, 255)
@@ -195,10 +195,10 @@ public class MainActivity extends AppCompatActivity {
                             mapView.addCircle(circleByLocal);
                             MapPOIItem markerOnCenter = new MapPOIItem();
                             markerOnCenter.setItemName("기준점");
-                            markerOnCenter.setMapPoint(MapPoint.mapPointWithGeoCoord(default_Latitude, default_Longitude));
+                            markerOnCenter.setMapPoint(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude));
                             markerOnCenter.setMarkerType(MapPOIItem.MarkerType.BluePin);
                             mapView.addPOIItem(markerOnCenter);
-                            GpsTracker.markerUpdate(default_Latitude, default_Longitude);
+                            GpsTracker.markerUpdate(current_latitude, current_longitude);
                         }
 
                         @Override
@@ -245,8 +245,17 @@ public class MainActivity extends AppCompatActivity {
         if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             gpsServiceSetting();
         }
-        mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
-        mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(gpsTracker.getLatitude(), gpsTracker.getLongitude()), true);
+        if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            gpsTracker = new GpsTracker(MainActivity.this);
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOnWithoutHeadingWithoutMapMoving);
+                    mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude), true);
+                }
+            }, 3000);
+        }
     }
     public static double distance(double latitude1, double longitude1, double latitude2, double longitude2) {
 
@@ -279,5 +288,16 @@ public class MainActivity extends AppCompatActivity {
     public void join(View view) {
         Intent intent = new Intent(this, joinUsActivity.class);
         startActivity(intent);
+    }
+    public void askPermission(){
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
+
+            if (permissionCheck == PackageManager.PERMISSION_DENIED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_ACCESS_FINE_LOCATION);
+            } else {
+                moveOnCurrentLocation();
+            }
+        } else { } //위치권한 허용 묻는 코드
     }
 }
