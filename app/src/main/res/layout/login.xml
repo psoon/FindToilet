@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
@@ -22,23 +24,27 @@
             android:layout_height="wrap_content"
             android:text="이메일/비밀번호입력"/>
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_login_id"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:hint="이메일"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:passwordToggleEnabled="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_login_pw"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="비밀번호"/>
+                android:layout_height="wrap_content"
+                android:hint="비밀번호"
+                android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
         <CheckBox
             android:layout_width="wrap_content"

@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
@@ -17,50 +19,56 @@
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
         android:padding="10dp"
-        android:orientation="vertical"
-        android:background="#EFBFBF">
+        android:orientation="vertical">
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_id"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@drawable/edittext_rounded"
                 android:hint="이메일"/>
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:passwordToggleEnabled="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_pw"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@drawable/edittext_rounded"
-                android:hint="비밀번호 입력 (6자리 이상)"/>
+                android:hint="비밀번호 입력 (6자리 이상)"
+                android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:passwordToggleEnabled="true"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_pw_check"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@drawable/edittext_rounded"
-                android:hint="비밀번호 확인"/>
+                android:hint="비밀번호 확인"
+                android:inputType="textPassword"/>
         </com.google.android.material.textfield.TextInputLayout>
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            app:counterEnabled="true"
+            app:counterMaxLength="10"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_nickname"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@drawable/edittext_rounded"
+                android:maxLength="10"
                 android:hint="이름(닉네임)"/>
         </com.google.android.material.textfield.TextInputLayout>
         <TextView
@@ -70,17 +78,16 @@
             android:padding="10dp"
             android:gravity="left"
             android:textSize="20sp"
-            android:text="* 필수 - 전화번호"
-            android:textColor="#ffffff"/>
+            android:text="* 필수 - 전화번호" />
         <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_user_phonenumber"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="wrap_content"
                 android:layout_margin="5dp"
-                android:background="@drawable/edittext_rounded"
                 android:hint="전화번호"/>
         </com.google.android.material.textfield.TextInputLayout>
 
