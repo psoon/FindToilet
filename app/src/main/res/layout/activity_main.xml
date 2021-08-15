@@ -65,14 +65,16 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
         </RelativeLayout>
-        <ImageButton
-            android:id="@+id/btn_refresh"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab_refresh"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
             android:layout_margin="30dp"
-            android:background="@drawable/btn_circle"
-            android:src="@drawable/refresh"/>
+            android:backgroundTint="#6596BD"
+            app:tint="@null"
+            app:borderWidth="0dp"
+            android:src="@drawable/fresh1"/>
 
     </FrameLayout>
 

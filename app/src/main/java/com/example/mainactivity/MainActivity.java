@@ -30,6 +30,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainactivity.category_search.CategoryResult;
 import com.example.mainactivity.category_search.Document;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
 
 import net.daum.mf.map.api.MapCircle;
@@ -46,7 +47,8 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     public static EditText editTextQuery;
     RecyclerView recyclerview;
-    ImageButton btn_filter, btn_refresh;
+    ImageButton btn_filter;
+    FloatingActionButton fab_refresh;
     public static MapView mapView;
     public static LocationManager lm;
     private static int REQUEST_ACCESS_FINE_LOCATION = 1000;
@@ -65,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         editTextQuery = findViewById(R.id.editTextQuery);
         recyclerview = findViewById(R.id.main_recyclerview);
         btn_filter = findViewById(R.id.btn_filter);
-        btn_refresh = findViewById(R.id.btn_refresh);
+        FloatingActionButton fab_refresh= findViewById(R.id.fab_refresh);
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -124,7 +126,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btn_refresh.setOnClickListener(new View.OnClickListener() {
+        fab_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mapViewContainer.removeAllViews();
