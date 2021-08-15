@@ -7,12 +7,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -44,7 +46,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MapView.POIItemEventListener, MapView.MapViewEventListener{
     public static EditText editTextQuery;
     RecyclerView recyclerview;
     ImageButton btn_filter;
@@ -80,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
         //화면구성 및 변수 초기화
 
         askPermission();
+        mapView.setPOIItemEventListener(this);
 
 
         editTextQuery.addTextChangedListener(new TextWatcher() {
@@ -133,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
                 mapView = new MapView(MainActivity.this);
                 mapViewContainer.addView(mapView);
                 moveOnCurrentLocation();
+                mapView.setPOIItemEventListener(MainActivity.this);
             }
         });
     }
@@ -163,8 +167,8 @@ public class MainActivity extends AppCompatActivity {
         builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Toast.makeText(MainActivity.this,"위치정보를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
-                if(!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+                Toast.makeText(MainActivity.this, "위치정보를 확인할 수 없습니다.", Toast.LENGTH_SHORT).show();
+                if (!lm.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
                     mapView.setMapCenterPoint(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude), true);
                     circleByLocal = new MapCircle(
                             MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude), // center
@@ -176,68 +180,7 @@ public class MainActivity extends AppCompatActivity {
                     circleByLocal.setCenter(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude));
                     GpsTracker.markerUpdate(current_latitude, current_longitude);
 
-                    mapView.setMapViewEventListener(new MapView.MapViewEventListener() {
-                        @Override
-                        public void onMapViewInitialized(MapView mapView) {
-                        }
-
-                        @Override
-                        public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
-                            mapView = MainActivity.mapView;
-                            mapView.removeAllPOIItems();
-                            current_latitude = mapPoint.getMapPointGeoCoord().latitude;
-                            current_longitude = mapPoint.getMapPointGeoCoord().longitude;
-                            mapView.removeCircle(circleByLocal);
-                            circleByLocal = new MapCircle(
-                                    MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude),
-                                    GpsTracker.radius,
-                                    Color.argb(128, 0, 0, 0), // strokeColor
-                                    Color.argb(40, 0, 0, 255)
-                            );
-                            mapView.addCircle(circleByLocal);
-                            MapPOIItem markerOnCenter = new MapPOIItem();
-                            markerOnCenter.setItemName("기준점");
-                            markerOnCenter.setMapPoint(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude));
-                            markerOnCenter.setMarkerType(MapPOIItem.MarkerType.BluePin);
-                            mapView.addPOIItem(markerOnCenter);
-                            GpsTracker.markerUpdate(current_latitude, current_longitude);
-                        }
-
-                        @Override
-                        public void onMapViewZoomLevelChanged(MapView mapView, int i) {
-                        }
-
-
-                        @Override
-                        public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
-
-                        }
-
-                        @Override
-                        public void onMapViewDoubleTapped(MapView mapView, MapPoint mapPoint) {
-
-                        }
-
-                        @Override
-                        public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
-
-                        }
-
-                        @Override
-                        public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
-
-                        }
-
-                        @Override
-                        public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
-
-                        }
-
-                        @Override
-                        public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
-
-                        }
-                    });
+                    mapView.setMapViewEventListener(MainActivity.this);
                 }
             }
         });
@@ -301,5 +244,94 @@ public class MainActivity extends AppCompatActivity {
                 moveOnCurrentLocation();
             }
         } else { } //위치권한 허용 묻는 코드
+    }
+    public void MarkerListener(){
+        mapView.setPOIItemEventListener(MainActivity.this);
+    }
+
+    @Override
+    public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
+        int tag = mapPOIItem.getTag();
+        String url = "https://map.kakao.com/link/map/" + dataArr[tag][1] + ","
+                + dataArr[tag][17] + "," + dataArr[tag][18];
+        Intent openURL = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+        startActivity(openURL);
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
+
+    }
+
+    @Override
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
+
+    }
+
+    @Override
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewInitialized(MapView mapView) {
+
+    }
+
+    @Override
+    public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
+        mapView = MainActivity.mapView;
+        mapView.removeAllPOIItems();
+        current_latitude = mapPoint.getMapPointGeoCoord().latitude;
+        current_longitude = mapPoint.getMapPointGeoCoord().longitude;
+        mapView.removeCircle(circleByLocal);
+        circleByLocal = new MapCircle(
+                MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude),
+                GpsTracker.radius,
+                Color.argb(128, 0, 0, 0), // strokeColor
+                Color.argb(40, 0, 0, 255)
+        );
+        mapView.addCircle(circleByLocal);
+        MapPOIItem markerOnCenter = new MapPOIItem();
+        markerOnCenter.setItemName("기준점");
+        markerOnCenter.setMapPoint(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude));
+        markerOnCenter.setMarkerType(MapPOIItem.MarkerType.BluePin);
+        mapView.addPOIItem(markerOnCenter);
+        GpsTracker.markerUpdate(current_latitude, current_longitude);
+    }
+
+    @Override
+    public void onMapViewZoomLevelChanged(MapView mapView, int i) {
+
+    }
+
+    @Override
+    public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDoubleTapped(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
+
+    }
+
+    @Override
+    public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
+
     }
 }

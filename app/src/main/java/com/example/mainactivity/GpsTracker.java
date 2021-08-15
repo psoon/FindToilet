@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import androidx.core.content.ContextCompat;
@@ -16,7 +17,12 @@ import androidx.core.content.ContextCompat;
 import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
+import net.daum.mf.map.api.MapView;
 
+import org.apache.commons.text.translate.NumericEntityUnescaper;
+
+import static androidx.core.app.ActivityCompat.startActivityForResult;
+import static com.example.mainactivity.MainActivity.dataArr;
 import static com.example.mainactivity.MainActivity.mapView;
 
 
@@ -170,13 +176,14 @@ public class GpsTracker extends Service implements LocationListener {
     public void stopUsingGPS() { if(locationManager != null) { locationManager.removeUpdates(this); } }
 
     public static void markerUpdate(double latitude, double longitude){
-        for(int i = 0; i<MainActivity.dataArr.length; i++){
-            if(!MainActivity.dataArr[i][17].isEmpty() && !MainActivity.dataArr[i][18].isEmpty()){
-                if(MainActivity.distance(latitude, longitude, Double.parseDouble(MainActivity.dataArr[i][17]), Double.parseDouble(MainActivity.dataArr[i][18])) <= radius){
+        mapView.removeAllPOIItems();
+        for(int i = 0; i< dataArr.length; i++) {
+            if (!dataArr[i][17].isEmpty() && !dataArr[i][18].isEmpty()) {
+                if (MainActivity.distance(latitude, longitude, Double.parseDouble(dataArr[i][17]), Double.parseDouble(dataArr[i][18])) <= radius) {
                     MapPOIItem marker = new MapPOIItem();
-                    marker.setItemName(MainActivity.dataArr[i][1]);
+                    marker.setItemName(dataArr[i][1]);
                     marker.setTag(i);
-                    marker.setMapPoint(MapPoint.mapPointWithGeoCoord(Double.parseDouble(MainActivity.dataArr[i][17]), Double.parseDouble(MainActivity.dataArr[i][18])));
+                    marker.setMapPoint(MapPoint.mapPointWithGeoCoord(Double.parseDouble(dataArr[i][17]), Double.parseDouble(dataArr[i][18])));
                     marker.setMarkerType(MapPOIItem.MarkerType.CustomImage);
                     marker.setCustomImageResourceId(R.drawable.marker_toilet);
                     marker.setSelectedMarkerType(MapPOIItem.MarkerType.RedPin);
@@ -185,5 +192,4 @@ public class GpsTracker extends Service implements LocationListener {
             }
         }
     }
-
 }
