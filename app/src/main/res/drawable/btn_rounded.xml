@@ -3,7 +3,12 @@
 
     <item android:state_enabled="true">
         <shape>
-            <corners android:radius="10dp"/>
+            <solid
+            android:background="@android:color/transparent"/>
+            <corners android:radius="100dp"/>
+            <stroke
+                android:width="2dp"
+                android:color="@color/black" />
         </shape>
     </item>
 </selector>
