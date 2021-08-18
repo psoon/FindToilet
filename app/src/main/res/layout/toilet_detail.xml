@@ -12,11 +12,10 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/location_name"
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:layout_weight="1"
-            android:text=""
+            android:text="장소이름"
             android:textSize="20sp" />
 
         <LinearLayout
@@ -28,7 +27,6 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_star"
                 android:layout_margin="10dp"
                 android:background="@drawable/btn_rounded"
                 android:drawableLeft="@drawable/star"
@@ -40,7 +38,6 @@
             <androidx.appcompat.widget.AppCompatButton
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
-                android:id="@+id/btn_siren"
                 android:layout_margin="10dp"
                 android:background="@drawable/btn_rounded"
                 android:drawableLeft="@drawable/siren"
@@ -54,7 +51,6 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/location_addr"
             android:layout_marginLeft="10dp"
             android:text=""
             android:textSize="18sp" />

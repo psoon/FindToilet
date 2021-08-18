@@ -16,9 +16,11 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +36,7 @@ import com.example.mainactivity.category_search.CategoryResult;
 import com.example.mainactivity.category_search.Document;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
+import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
@@ -51,6 +54,12 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     RecyclerView recyclerview;
     ImageButton btn_filter;
     FloatingActionButton fab_refresh;
+    Button btn_search;
+    SlidingUpPanelLayout panel;
+    TextView location_name, location_addr, tv_gender, tv_serviceTime;
+    String [] tvStr = {"대변기수", "소변기수", "장애인 대변기수", "장애인소변기수", "유아용 대변기수", "유아용소변기수", "대변기수", "장애인 대변기수", "유아용대변기수"};
+    Integer[] tvId = {R.id.tv_male_toilet, R.id.tv_male_urinal, R.id.tv_male_handiToilet, R.id.tv_male_handiUrinal, R.id.tv_male_kidToilet, R.id.tv_male_kidUrinal,
+                        R.id.tv_female_toilet, R.id.tv_female_handiToilet, R.id.tv_female_kidToilet};
     public static MapView mapView;
     public static LocationManager lm;
     private static int REQUEST_ACCESS_FINE_LOCATION = 1000;
@@ -69,7 +78,13 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         editTextQuery = findViewById(R.id.editTextQuery);
         recyclerview = findViewById(R.id.main_recyclerview);
         btn_filter = findViewById(R.id.btn_filter);
-        FloatingActionButton fab_refresh= findViewById(R.id.fab_refresh);
+        fab_refresh= findViewById(R.id.fab_refresh);
+        btn_search = findViewById(R.id.btnSearch);
+        panel = findViewById(R.id.slidingPanel);
+        location_name = findViewById(R.id.location_name);
+        location_addr = findViewById(R.id.location_addr);
+        tv_gender = findViewById(R.id.tv_gender);
+        tv_serviceTime = findViewById(R.id.tv_serviceTime);
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -83,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
 
         askPermission();
         mapView.setPOIItemEventListener(this);
+        panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 
 
         editTextQuery.addTextChangedListener(new TextWatcher() {
@@ -126,6 +142,38 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             @Override
             public void afterTextChanged(Editable s) {
 
+            }
+        });
+        btn_search.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try{
+                    String s = editTextQuery.getText().toString();
+                    documentArrayList.clear();
+                    locationAdapter.clear();
+                    locationAdapter.notifyDataSetChanged();
+                    ApiInterface apiInterface = RetrofitApiClient.getApiClient().create(ApiInterface.class);
+                    Call<CategoryResult> call = apiInterface.getSearchLocation("KakaoAK d58052159cf446f527c49bd30884f70c", s, 15);
+                    call.enqueue(new Callback<CategoryResult>() {
+                        @Override
+                        public void onResponse(Call<CategoryResult> call, Response<CategoryResult> response) {
+                            if (response.isSuccessful()) {
+                                assert response.body() != null;
+                                for (Document document : response.body().getDocuments()) {
+                                    locationAdapter.addItem(document);
+                                }
+                                locationAdapter.notifyDataSetChanged();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<CategoryResult> call, Throwable t) {
+
+                        }
+                    });
+                }catch(Exception e){
+                    Toast.makeText(MainActivity.this,"검색에 실패하였습니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
@@ -252,10 +300,32 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     @Override
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
         int tag = mapPOIItem.getTag();
-        String url = "https://map.kakao.com/link/map/" + dataArr[tag][1] + ","
-                + dataArr[tag][17] + "," + dataArr[tag][18];
-        Intent openURL = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-        startActivity(openURL);
+        try{
+            panel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+            location_name.setText(dataArr[tag][1]);
+            if(dataArr[tag][2]!=null){
+                location_addr.setText(dataArr[tag][2]);
+            } else location_addr.setText(dataArr[tag][3]);
+            if(dataArr[tag][4]!=null){
+                if(dataArr[tag][4].equals('N')){
+                    tv_gender.setText("남여공용 여부: N");
+                }else tv_gender.setText("남여공용 여부: Y");
+            }
+            for(int i = 0; i<tvId.length; i++){
+                int idx = i + 5;
+                TextView tmpTv = findViewById(tvId[i]);
+                tmpTv.setText(tvStr[i] + dataArr[tag][idx]);
+            }
+            if(dataArr[tag][16]!=null){
+                tv_serviceTime.setText("운영시간: "+ dataArr[tag][16]);
+            }
+        }catch(Exception e){
+            Toast.makeText(MainActivity.this, "정보를 불러올 수 없습니다.", Toast.LENGTH_LONG).show();
+        }
+//        String url = "https://map.kakao.com/link/map/" + dataArr[tag][1] + ","
+//                + dataArr[tag][17] + "," + dataArr[tag][18];
+//        Intent openURL = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+//        startActivity(openURL);
     }
 
     @Override
@@ -307,7 +377,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
 
     @Override
     public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
-
+        panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
     }
 
     @Override
