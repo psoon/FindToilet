@@ -12,6 +12,9 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
+import android.widget.Toast;
+
 import androidx.core.content.ContextCompat;
 
 import net.daum.mf.map.api.MapCircle;
@@ -179,7 +182,24 @@ public class GpsTracker extends Service implements LocationListener {
         mapView.removeAllPOIItems();
         for(int i = 0; i< dataArr.length; i++) {
             if (!dataArr[i][17].isEmpty() && !dataArr[i][18].isEmpty()) {
-                if (MainActivity.distance(latitude, longitude, Double.parseDouble(dataArr[i][17]), Double.parseDouble(dataArr[i][18])) <= radius) {
+                if (MainActivity.distance(latitude, longitude, Double.parseDouble(dataArr[i][17]), Double.parseDouble(dataArr[i][18])) <= radius && checking(i)) {
+                    try{
+                        if(Filter.handicap> Integer.parseInt(dataArr[i][7])+ Integer.parseInt(dataArr[i][8]) + Integer.parseInt(dataArr[i][12])){
+                            continue;
+                        }
+                        if(Filter.kid > Integer.parseInt(dataArr[i][9]) + Integer.parseInt(dataArr[i][10]) + Integer.parseInt(dataArr[i][13])){
+                            continue;
+                        }
+                        if(Filter.toilet > Integer.parseInt(dataArr[i][5]) + Integer.parseInt(dataArr[i][11])){
+                            continue;
+                        }
+                        if(Filter.urinal > Integer.parseInt(dataArr[i][6])){
+                            continue;
+                        }
+                    } catch(Exception e){
+                        Log.e("error ", "error : " + e);
+                    }
+
                     MapPOIItem marker = new MapPOIItem();
                     marker.setItemName(dataArr[i][1]);
                     marker.setTag(i);

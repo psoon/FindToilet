@@ -22,7 +22,7 @@ import static com.example.mainactivity.MainActivity.mapView;
 public class Filter extends AppCompatActivity {
     EditText edit_radius;
     CheckBox filter_both, filter_seperate, filter_urinal, filter_toilet, filter_handicap, filter_kid;
-    public static String gender;
+    public static String gender = "both";
     public static int urinal = 0, toilet = 0, handicap = 0, kid = 0;
     protected void onCreate(Bundle saveInstanceState) {
 
@@ -30,7 +30,6 @@ public class Filter extends AppCompatActivity {
         setContentView(R.layout.filter);
         edit_radius = findViewById(R.id.edit_radius);
         edit_radius.setHint("현재설정 : " + GpsTracker.radius + "m");
-
         filter_both = findViewById(R.id.filter_both);
         filter_seperate = findViewById(R.id.filter_seperate);
         filter_urinal = findViewById(R.id.filter_urinal);
