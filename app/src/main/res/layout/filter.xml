@@ -16,17 +16,21 @@
         android:drawablePadding="10dp"
         android:orientation="horizontal"/>
         <CheckBox
+            android:id="@+id/filter_both"
             android:layout_marginLeft="30dp"
             android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="공용"></CheckBox>
+            android:text="공용"
+            android:checked="true"></CheckBox>
         <CheckBox
+            android:id="@+id/filter_seperate"
             android:layout_marginLeft="30dp"
             android:padding="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="분리"></CheckBox>
+            android:text="분리"
+            android:checked="true"></CheckBox>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -39,17 +43,21 @@
         android:drawablePadding="10dp"
         android:orientation="horizontal"/>
     <CheckBox
+        android:id="@+id/filter_urinal"
         android:layout_marginLeft="15dp"
         android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="소변기"></CheckBox>
+        android:text="소변기"
+        android:checked="true"></CheckBox>
     <CheckBox
+        android:id="@+id/filter_toilet"
         android:layout_marginLeft="15dp"
         android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="대변기"></CheckBox>
+        android:text="대변기"
+        android:checked="true"></CheckBox>
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -62,17 +70,21 @@
         android:drawablePadding="10dp"
         android:orientation="horizontal"/>
     <CheckBox
+        android:id="@+id/filter_handicap"
         android:layout_marginLeft="15dp"
         android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="장애시설"></CheckBox>
+        android:text="장애시설"
+        android:checked="true"></CheckBox>
     <CheckBox
+        android:id="@+id/filter_kid"
         android:layout_marginLeft="15dp"
         android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="유아용 변기"></CheckBox>
+        android:text="유아용 변기"
+        android:checked="true"></CheckBox>
 
     <TextView
         android:layout_width="match_parent"

@@ -4,6 +4,8 @@ import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -19,12 +21,79 @@ import static com.example.mainactivity.MainActivity.mapView;
 
 public class Filter extends AppCompatActivity {
     EditText edit_radius;
+    CheckBox filter_both, filter_seperate, filter_urinal, filter_toilet, filter_handicap, filter_kid;
+    public static String gender;
+    public static int urinal = 0, toilet = 0, handicap = 0, kid = 0;
     protected void onCreate(Bundle saveInstanceState) {
 
         super.onCreate(saveInstanceState);
         setContentView(R.layout.filter);
         edit_radius = findViewById(R.id.edit_radius);
         edit_radius.setHint("현재설정 : " + GpsTracker.radius + "m");
+
+        filter_both = findViewById(R.id.filter_both);
+        filter_seperate = findViewById(R.id.filter_seperate);
+        filter_urinal = findViewById(R.id.filter_urinal);
+        filter_toilet = findViewById(R.id.filter_toilet);
+        filter_handicap = findViewById(R.id.filter_handicap);
+        filter_kid = findViewById(R.id.filter_kid);
+
+        filter_both.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(filter_both.isChecked() | filter_seperate.isChecked()){
+                    if(!filter_seperate.isChecked()){
+                        gender = "Y";
+                    }else if (!filter_both.isChecked()){
+                        gender = "N";
+                    }else gender = "both";
+                }
+            }
+        });
+        filter_seperate.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(filter_both.isChecked() | filter_seperate.isChecked()){
+                    if(!filter_seperate.isChecked()){
+                        gender = "Y";
+                    }else if (!filter_both.isChecked()){
+                        gender = "N";
+                    }else gender = "both";
+                }
+            }
+        });
+        filter_urinal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(filter_urinal.isChecked()){
+                    urinal = 0;
+                }else urinal = Integer.MAX_VALUE;
+            }
+        });
+        filter_toilet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(filter_toilet.isChecked()){
+                    toilet = 0;
+                }else toilet = Integer.MAX_VALUE;
+            }
+        });
+        filter_handicap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(filter_handicap.isChecked()){
+                    handicap = 0;
+                }else handicap = Integer.MAX_VALUE;
+            }
+        });
+        filter_kid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                if(filter_kid.isChecked()){
+                    kid = 0;
+                }else kid = Integer.MAX_VALUE;
+            }
+        });
     }
 
     public void btn_radius_onclick(View view){

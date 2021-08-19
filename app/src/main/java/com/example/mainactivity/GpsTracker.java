@@ -192,4 +192,13 @@ public class GpsTracker extends Service implements LocationListener {
             }
         }
     }
+    public static boolean checking(int i){
+        boolean result = true;
+        if(!Filter.gender.equals("both")){
+            if(Filter.gender.equals(dataArr[i][4])){
+                result = true;
+            } else result = false;
+        }
+        return result;
+    }
 }

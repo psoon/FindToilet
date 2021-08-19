@@ -404,4 +404,23 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
 
     }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("종료하시겠습니까?");
+        builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        builder.setNegativeButton("아니오", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+            }
+        });
+        builder.setTitle("화장실 어디야");
+        builder.show();
+    }
 }
