@@ -315,7 +315,8 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             for(int i = 0; i<tvId.length; i++){
                 int idx = i + 5;
                 TextView tmpTv = findViewById(tvId[i]);
-                tmpTv.setText(tvStr[i] + dataArr[tag][idx]);
+                tmpTv.setText(dataArr[tag][idx]);
+                //tmpTv.setText(tvStr[i] + dataArr[tag][idx]);
             }
             if(dataArr[tag][16]!=null){
                 tv_serviceTime.setText("운영시간: "+ dataArr[tag][16]);

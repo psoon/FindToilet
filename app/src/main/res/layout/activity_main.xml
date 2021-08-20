@@ -64,6 +64,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/handle"
+                    android:layout_gravity="center"
+                    android:src="@drawable/handle"/>
+
                 <LinearLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
@@ -78,11 +86,26 @@
                         android:layout_weight="1"
                         android:textSize="20sp" />
 
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:layout_width="280dp"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/btn_navigation"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:background="@drawable/btn_rounded"
+                        android:drawableLeft="@drawable/navigation"
+                        android:paddingHorizontal="25dip"
+                        android:text="길찾기    "
+                        android:textColor="#000000"
+                        android:textSize="15sp" />
+
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="center"
                         android:orientation="horizontal">
+
+
 
                         <androidx.appcompat.widget.AppCompatButton
                             android:layout_width="130dp"
@@ -137,7 +160,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:columnCount="3"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:layout_margin="10dp"
                         android:rowCount="6">
 
@@ -151,61 +174,120 @@
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:text="남성용" />
-
-                        <TextView
-                            android:id="@+id/tv_male_toilet"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="140dp"
                             android:layout_height="wrap_content"
-                            android:layout_row="0"
-                            android:layout_column="1"
-                            android:text="대변기수" />
+                            android:orientation="vertical"
+                            >
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="0"
+                                android:layout_column="1"
+                                android:text="대변기수" />
 
-                        <TextView
-                            android:id="@+id/tv_male_urinal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_row="1"
-                            android:layout_column="1"
-                            android:text="소변기수" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="1"
+                                android:layout_column="1"
+                                android:text="소변기수" />
 
-                        <TextView
-                            android:id="@+id/tv_male_handiToilet"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_row="2"
-                            android:layout_column="1"
-                            android:text="장애인 대변기수" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="2"
+                                android:layout_column="1"
+                                android:text="장애인 대변기수" />
 
-                        <TextView
-                            android:id="@+id/tv_male_handiUrinal"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_row="3"
-                            android:layout_column="1"
-                            android:text="장애인 소변기수" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="3"
+                                android:layout_column="1"
+                                android:text="장애인 소변기수" />
 
-                        <TextView
-                            android:id="@+id/tv_male_kidToilet"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_row="4"
-                            android:layout_column="1"
-                            android:text="유아용 대변기수" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="4"
+                                android:layout_column="1"
+                                android:text="유아용 대변기수" />
 
-                        <TextView
-                            android:id="@+id/tv_male_kidUrinal"
-                            android:layout_width="match_parent"
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="5"
+                                android:layout_column="1"
+                                android:text="유아용 소변기수" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="140dp"
                             android:layout_height="wrap_content"
-                            android:layout_row="5"
-                            android:layout_column="1"
-                            android:text="유아용 소변기수" />
+                            android:orientation="vertical"
+                            >
+                            <TextView
+                                android:id="@+id/tv_male_toilet"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="0"
+                                android:layout_column="1"
+                                android:gravity="right"
+                                android:text="" />
+
+                            <TextView
+                                android:id="@+id/tv_male_urinal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="1"
+                                android:layout_column="1"
+                                android:gravity="right"
+                                android:text="" />
+
+                            <TextView
+                                android:id="@+id/tv_male_handiToilet"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="2"
+                                android:layout_column="1"
+                                android:gravity="right"
+                                android:text="" />
+
+                            <TextView
+                                android:id="@+id/tv_male_handiUrinal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="3"
+                                android:layout_column="1"
+                                android:gravity="right"
+                                android:text="" />
+
+                            <TextView
+                                android:id="@+id/tv_male_kidToilet"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="4"
+                                android:layout_column="1"
+                                android:gravity="right"
+                                android:text="" />
+
+                            <TextView
+                                android:id="@+id/tv_male_kidUrinal"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="5"
+                                android:layout_column="1"
+                                android:gravity="right"
+                                android:text="" />
+
+                        </LinearLayout>
                     </GridLayout>
 
                     <GridLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:columnCount="3"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:layout_margin="10dp"
                         android:rowCount="3">
 
@@ -219,30 +301,63 @@
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:text="여성용" />
-
-                        <TextView
-                            android:id="@+id/tv_female_toilet"
-                            android:layout_width="match_parent"
+                        <LinearLayout
+                            android:layout_width="140dp"
                             android:layout_height="wrap_content"
-                            android:layout_row="0"
-                            android:layout_column="1"
-                            android:text="대변기수" />
+                            android:orientation="vertical"
+                            >
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="0"
+                                android:layout_column="1"
+                                android:text="대변기수" />
 
-                        <TextView
-                            android:id="@+id/tv_female_handiToilet"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_row="1"
-                            android:layout_column="1"
-                            android:text="장애인 대변기수" />
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="1"
+                                android:layout_column="1"
+                                android:text="장애인 대변기수" />
 
-                        <TextView
-                            android:id="@+id/tv_female_kidToilet"
-                            android:layout_width="match_parent"
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="2"
+                                android:layout_column="1"
+                                android:text="유아용 대변기수" />
+                        </LinearLayout>
+                        <LinearLayout
+                            android:layout_width="140dp"
                             android:layout_height="wrap_content"
-                            android:layout_row="2"
-                            android:layout_column="1"
-                            android:text="유아용 대변기수" />
+                            android:orientation="vertical">
+                            <TextView
+                                android:id="@+id/tv_female_toilet"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="0"
+                                android:layout_column="1"
+                                android:gravity="right"
+                                android:text="" />
+
+                            <TextView
+                                android:id="@+id/tv_female_handiToilet"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="1"
+                                android:layout_column="1"
+                                android:gravity="right"
+                                android:text="" />
+
+                            <TextView
+                                android:id="@+id/tv_female_kidToilet"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_row="2"
+                                android:layout_column="1"
+                                android:gravity="right"
+                                android:text="" />
+                        </LinearLayout>
 
                     </GridLayout>
                     <LinearLayout
@@ -258,7 +373,6 @@
                     </LinearLayout>
 
                 </LinearLayout>
-
             </LinearLayout>
         </com.sothree.slidinguppanel.SlidingUpPanelLayout>
         <com.google.android.material.floatingactionbutton.FloatingActionButton

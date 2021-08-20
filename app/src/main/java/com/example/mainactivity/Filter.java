@@ -21,8 +21,8 @@ import static com.example.mainactivity.MainActivity.mapView;
 
 public class Filter extends AppCompatActivity {
     EditText edit_radius;
-    CheckBox filter_both, filter_seperate, filter_urinal, filter_toilet, filter_handicap, filter_kid;
-
+    CheckBox filter_both, filter_seperate,  filter_handicap, filter_kid;
+//    CheckBox filter_urinal, filter_toilet,
     protected void onCreate(Bundle saveInstanceState) {
 
         super.onCreate(saveInstanceState);
@@ -31,8 +31,8 @@ public class Filter extends AppCompatActivity {
         edit_radius.setHint("현재설정 : " + GpsTracker.radius + "m");
         filter_both = findViewById(R.id.filter_both);
         filter_seperate = findViewById(R.id.filter_seperate);
-        filter_urinal = findViewById(R.id.filter_urinal);
-        filter_toilet = findViewById(R.id.filter_toilet);
+//        filter_urinal = findViewById(R.id.filter_urinal);
+//        filter_toilet = findViewById(R.id.filter_toilet);
         filter_handicap = findViewById(R.id.filter_handicap);
         filter_kid = findViewById(R.id.filter_kid);
 
@@ -43,12 +43,12 @@ public class Filter extends AppCompatActivity {
             filter_seperate.setChecked(true);
         }else filter_both.setChecked(true);
 
-        if(GpsTracker.urinal == Integer.MAX_VALUE){
-            filter_urinal.setChecked(false);
-        }else filter_urinal.setChecked(true);
-        if(GpsTracker.toilet == Integer.MAX_VALUE){
-            filter_toilet.setChecked(false);
-        }else filter_toilet.setChecked(true);
+//        if(GpsTracker.urinal == Integer.MAX_VALUE){
+//            filter_urinal.setChecked(false);
+//        }else filter_urinal.setChecked(true);
+//        if(GpsTracker.toilet == Integer.MAX_VALUE){
+//            filter_toilet.setChecked(false);
+//        }else filter_toilet.setChecked(true);
         if(GpsTracker.handicap == Integer.MAX_VALUE){
             filter_handicap.setChecked(false);
         }else filter_handicap.setChecked(true);
@@ -81,22 +81,22 @@ public class Filter extends AppCompatActivity {
                 }
             }
         });
-        filter_urinal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(filter_urinal.isChecked()){
-                    GpsTracker.urinal = 0;
-                }else GpsTracker.urinal = Integer.MAX_VALUE;
-            }
-        });
-        filter_toilet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                if(filter_toilet.isChecked()){
-                    GpsTracker.toilet = 0;
-                }else GpsTracker.toilet = Integer.MAX_VALUE;
-            }
-        });
+//        filter_urinal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                if(filter_urinal.isChecked()){
+//                    GpsTracker.urinal = 0;
+//                }else GpsTracker.urinal = Integer.MAX_VALUE;
+//            }
+//        });
+//        filter_toilet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+//            @Override
+//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+//                if(filter_toilet.isChecked()){
+//                    GpsTracker.toilet = 0;
+//                }else GpsTracker.toilet = Integer.MAX_VALUE;
+//            }
+//        });
         filter_handicap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {

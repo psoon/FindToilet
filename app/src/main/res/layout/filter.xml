@@ -4,6 +4,32 @@
     android:layout_width="match_parent"
     android:orientation="vertical" >
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/filter_btn_login"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="10dp"
+            android:textColor="@color/white"
+            android:backgroundTint="#1E88E5"
+            android:text="로그인"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/filter_btn_join"
+            android:layout_marginTop="20dp"
+            android:layout_marginHorizontal="10dp"
+            android:textColor="@color/white"
+            android:backgroundTint="#1E88E5"
+            android:text="회원가입"/>
+    </LinearLayout>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -29,31 +55,31 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="분리"></CheckBox>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:lines="1"
-        android:textSize="25sp"
-        android:text="변기"
-        android:drawableLeft="@drawable/filter2"
-        android:drawablePadding="10dp"
-        android:orientation="horizontal"/>
-    <CheckBox
-        android:id="@+id/filter_urinal"
-        android:layout_marginLeft="15dp"
-        android:padding="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="소변기"></CheckBox>
-    <CheckBox
-        android:id="@+id/filter_toilet"
-        android:layout_marginLeft="15dp"
-        android:padding="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="대변기"></CheckBox>
+<!--    <TextView-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginLeft="10dp"-->
+<!--        android:layout_marginTop="30dp"-->
+<!--        android:lines="1"-->
+<!--        android:textSize="25sp"-->
+<!--        android:text="변기"-->
+<!--        android:drawableLeft="@drawable/filter2"-->
+<!--        android:drawablePadding="10dp"-->
+<!--        android:orientation="horizontal"/>-->
+<!--    <CheckBox-->
+<!--        android:id="@+id/filter_urinal"-->
+<!--        android:layout_marginLeft="15dp"-->
+<!--        android:padding="10dp"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="소변기"></CheckBox>-->
+<!--    <CheckBox-->
+<!--        android:id="@+id/filter_toilet"-->
+<!--        android:layout_marginLeft="15dp"-->
+<!--        android:padding="10dp"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="대변기"></CheckBox>-->
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -67,14 +93,14 @@
         android:orientation="horizontal"/>
     <CheckBox
         android:id="@+id/filter_handicap"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="30dp"
         android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="장애시설"></CheckBox>
     <CheckBox
         android:id="@+id/filter_kid"
-        android:layout_marginLeft="15dp"
+        android:layout_marginLeft="30dp"
         android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
