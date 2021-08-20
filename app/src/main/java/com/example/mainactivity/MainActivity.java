@@ -1,6 +1,7 @@
 package com.example.mainactivity;
 
 import android.Manifest;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -14,7 +15,6 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -51,6 +51,7 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements MapView.POIItemEventListener, MapView.MapViewEventListener{
     public static EditText editTextQuery;
+    ProgressDialog loading;
     RecyclerView recyclerview;
     ImageButton btn_filter;
     FloatingActionButton fab_refresh;
@@ -307,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                 location_addr.setText(dataArr[tag][2]);
             } else location_addr.setText(dataArr[tag][3]);
             if(dataArr[tag][4]!=null){
-                if(dataArr[tag][4].equals('N')){
+                if(dataArr[tag][4].equals("N")){
                     tv_gender.setText("남여공용 여부: N");
                 }else tv_gender.setText("남여공용 여부: Y");
             }

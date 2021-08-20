@@ -22,8 +22,7 @@ import static com.example.mainactivity.MainActivity.mapView;
 public class Filter extends AppCompatActivity {
     EditText edit_radius;
     CheckBox filter_both, filter_seperate, filter_urinal, filter_toilet, filter_handicap, filter_kid;
-    public static String gender = "both";
-    public static int urinal = 0, toilet = 0, handicap = 0, kid = 0;
+
     protected void onCreate(Bundle saveInstanceState) {
 
         super.onCreate(saveInstanceState);
@@ -37,15 +36,36 @@ public class Filter extends AppCompatActivity {
         filter_handicap = findViewById(R.id.filter_handicap);
         filter_kid = findViewById(R.id.filter_kid);
 
+        if(GpsTracker.gender.equals("both")){
+            filter_both.setChecked(true);
+            filter_seperate.setChecked(true);
+        }else if(GpsTracker.gender.equals("N")){
+            filter_seperate.setChecked(true);
+        }else filter_both.setChecked(true);
+
+        if(GpsTracker.urinal == Integer.MAX_VALUE){
+            filter_urinal.setChecked(false);
+        }else filter_urinal.setChecked(true);
+        if(GpsTracker.toilet == Integer.MAX_VALUE){
+            filter_toilet.setChecked(false);
+        }else filter_toilet.setChecked(true);
+        if(GpsTracker.handicap == Integer.MAX_VALUE){
+            filter_handicap.setChecked(false);
+        }else filter_handicap.setChecked(true);
+        if(GpsTracker.kid == Integer.MAX_VALUE){
+            filter_kid.setChecked(false);
+        }else filter_kid.setChecked(true);
+
+
         filter_both.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(filter_both.isChecked() | filter_seperate.isChecked()){
                     if(!filter_seperate.isChecked()){
-                        gender = "Y";
+                        GpsTracker.gender = "Y";
                     }else if (!filter_both.isChecked()){
-                        gender = "N";
-                    }else gender = "both";
+                        GpsTracker.gender = "N";
+                    }else GpsTracker.gender = "both";
                 }
             }
         });
@@ -54,10 +74,10 @@ public class Filter extends AppCompatActivity {
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(filter_both.isChecked() | filter_seperate.isChecked()){
                     if(!filter_seperate.isChecked()){
-                        gender = "Y";
+                        GpsTracker.gender = "Y";
                     }else if (!filter_both.isChecked()){
-                        gender = "N";
-                    }else gender = "both";
+                        GpsTracker.gender = "N";
+                    }else GpsTracker.gender = "both";
                 }
             }
         });
@@ -65,32 +85,32 @@ public class Filter extends AppCompatActivity {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(filter_urinal.isChecked()){
-                    urinal = 0;
-                }else urinal = Integer.MAX_VALUE;
+                    GpsTracker.urinal = 0;
+                }else GpsTracker.urinal = Integer.MAX_VALUE;
             }
         });
         filter_toilet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(filter_toilet.isChecked()){
-                    toilet = 0;
-                }else toilet = Integer.MAX_VALUE;
+                    GpsTracker.toilet = 0;
+                }else GpsTracker.toilet = Integer.MAX_VALUE;
             }
         });
         filter_handicap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(filter_handicap.isChecked()){
-                    handicap = 0;
-                }else handicap = Integer.MAX_VALUE;
+                    GpsTracker.handicap = 0;
+                }else GpsTracker.handicap = Integer.MAX_VALUE;
             }
         });
         filter_kid.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 if(filter_kid.isChecked()){
-                    kid = 0;
-                }else kid = Integer.MAX_VALUE;
+                    GpsTracker.kid = 0;
+                }else GpsTracker.kid = Integer.MAX_VALUE;
             }
         });
     }
@@ -141,5 +161,9 @@ public class Filter extends AppCompatActivity {
             Toast.makeText(this,"잘못된 입력입니다.",Toast.LENGTH_SHORT).show();
         }
 
+    }
+    public void onDestroy() {
+        MainActivity.gpsTracker.markerUpdate(MainActivity.current_latitude, MainActivity.current_longitude);
+        super.onDestroy();
     }
 }

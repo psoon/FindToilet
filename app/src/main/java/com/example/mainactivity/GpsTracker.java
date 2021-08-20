@@ -9,22 +9,16 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 
 import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
-import net.daum.mf.map.api.MapView;
 
-import org.apache.commons.text.translate.NumericEntityUnescaper;
-
-import static androidx.core.app.ActivityCompat.startActivityForResult;
 import static com.example.mainactivity.MainActivity.dataArr;
 import static com.example.mainactivity.MainActivity.mapView;
 
@@ -37,6 +31,9 @@ public class GpsTracker extends Service implements LocationListener {
     double longitude;
     public static int radius = 700;
     public static MapCircle circleByGPS;
+
+    public static String gender = "both";
+    public static int urinal = 0, toilet = 0, handicap = Integer.MAX_VALUE, kid = Integer.MAX_VALUE;
 
     private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10;
     private static final long MIN_TIME_BW_UPDATES = 1000;
@@ -184,16 +181,16 @@ public class GpsTracker extends Service implements LocationListener {
             if (!dataArr[i][17].isEmpty() && !dataArr[i][18].isEmpty()) {
                 if (MainActivity.distance(latitude, longitude, Double.parseDouble(dataArr[i][17]), Double.parseDouble(dataArr[i][18])) <= radius && checking(i)) {
                     try{
-                        if(Filter.handicap> Integer.parseInt(dataArr[i][7])+ Integer.parseInt(dataArr[i][8]) + Integer.parseInt(dataArr[i][12])){
+                        if(handicap == 0 && 0 == Integer.parseInt(dataArr[i][7])+ Integer.parseInt(dataArr[i][8]) + Integer.parseInt(dataArr[i][12])){
                             continue;
                         }
-                        if(Filter.kid > Integer.parseInt(dataArr[i][9]) + Integer.parseInt(dataArr[i][10]) + Integer.parseInt(dataArr[i][13])){
+                        if(kid == 0 && 0 == Integer.parseInt(dataArr[i][9]) + Integer.parseInt(dataArr[i][10]) + Integer.parseInt(dataArr[i][13])){
                             continue;
                         }
-                        if(Filter.toilet > Integer.parseInt(dataArr[i][5]) + Integer.parseInt(dataArr[i][11])){
+                        if(toilet == 0 && 0 == Integer.parseInt(dataArr[i][5]) + Integer.parseInt(dataArr[i][11])){
                             continue;
                         }
-                        if(Filter.urinal > Integer.parseInt(dataArr[i][6])){
+                        if(urinal == 0 && 0 == Integer.parseInt(dataArr[i][6])){
                             continue;
                         }
                     } catch(Exception e){
@@ -214,8 +211,8 @@ public class GpsTracker extends Service implements LocationListener {
     }
     public static boolean checking(int i){
         boolean result = true;
-        if(!Filter.gender.equals("both")){
-            if(Filter.gender.equals(dataArr[i][4])){
+        if(!gender.equals("both")){
+            if(gender.equals(dataArr[i][4])){
                 result = true;
             } else result = false;
         }
