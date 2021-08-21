@@ -1,6 +1,7 @@
 package com.example.mainactivity;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -55,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     RecyclerView recyclerview;
     ImageButton btn_filter;
     FloatingActionButton fab_refresh;
-    Button btn_search;
+    Button btn_search,btn_star;
     SlidingUpPanelLayout panel;
     TextView location_name, location_addr, tv_gender, tv_serviceTime;
     String [] tvStr = {"대변기수", "소변기수", "장애인 대변기수", "장애인소변기수", "유아용 대변기수", "유아용소변기수", "대변기수", "장애인 대변기수", "유아용대변기수"};
@@ -68,6 +69,8 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     public static String[][] dataArr = new String[35754][19];
     public static double current_latitude = 37.5665, current_longitude = 126.9780;
     public static MapCircle circleByLocal;
+    int Checknum=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,6 +84,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         btn_filter = findViewById(R.id.btn_filter);
         fab_refresh= findViewById(R.id.fab_refresh);
         btn_search = findViewById(R.id.btnSearch);
+        btn_star=findViewById(R.id.btn_star);
         panel = findViewById(R.id.slidingPanel);
         location_name = findViewById(R.id.location_name);
         location_addr = findViewById(R.id.location_addr);
@@ -178,6 +182,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             }
         });
 
+
         fab_refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -186,6 +191,12 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                 mapViewContainer.addView(mapView);
                 moveOnCurrentLocation();
                 mapView.setPOIItemEventListener(MainActivity.this);
+            }
+        });
+        btn_star.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                btn_star.setSelected(!btn_star.isSelected());
             }
         });
     }

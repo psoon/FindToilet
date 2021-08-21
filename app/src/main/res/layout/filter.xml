@@ -14,19 +14,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/filter_btn_login"
-            android:layout_marginTop="20dp"
+            android:layout_marginVertical="20dp"
             android:layout_marginHorizontal="10dp"
             android:textColor="@color/white"
-            android:backgroundTint="#1E88E5"
+            android:background="@drawable/btn_blue"
             android:text="로그인"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/filter_btn_join"
-            android:layout_marginTop="20dp"
+            android:layout_marginVertical="20dp"
             android:layout_marginHorizontal="10dp"
             android:textColor="@color/white"
-            android:backgroundTint="#1E88E5"
+            android:background="@drawable/btn_blue"
             android:text="회원가입"/>
     </LinearLayout>
 

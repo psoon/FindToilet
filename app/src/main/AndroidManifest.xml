@@ -14,7 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MainActivity"
         android:usesCleartextTraffic="true">
-        <activity android:name=".loginActivity"></activity>
+        <activity android:name=".loginActivity"/>
         <activity android:name=".joinUsActivity" />
         <activity android:name=".IntroActivity">
             <intent-filter>

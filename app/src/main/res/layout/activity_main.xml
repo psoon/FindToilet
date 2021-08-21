@@ -107,19 +107,19 @@
 
 
 
-                        <androidx.appcompat.widget.AppCompatButton
+                        <Button
                             android:layout_width="130dp"
                             android:layout_height="wrap_content"
                             android:id="@+id/btn_star"
                             android:layout_margin="10dp"
-                            android:background="@drawable/btn_rounded"
+                            android:background="@drawable/btn_star"
                             android:drawableLeft="@drawable/star"
                             android:paddingHorizontal="18dip"
                             android:text="즐겨찾기"
                             android:textColor="#000000"
                             android:textSize="15sp" />
 
-                        <androidx.appcompat.widget.AppCompatButton
+                        <Button
                             android:layout_width="130dp"
                             android:layout_height="wrap_content"
                             android:id="@+id/btn_siren"

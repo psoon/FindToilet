@@ -1,9 +1,11 @@
 package com.example.mainactivity;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
@@ -22,6 +24,7 @@ import static com.example.mainactivity.MainActivity.mapView;
 public class Filter extends AppCompatActivity {
     EditText edit_radius;
     CheckBox filter_both, filter_seperate,  filter_handicap, filter_kid;
+    Button filter_btn_login, filter_btn_join;
 //    CheckBox filter_urinal, filter_toilet,
     protected void onCreate(Bundle saveInstanceState) {
 
@@ -35,6 +38,9 @@ public class Filter extends AppCompatActivity {
 //        filter_toilet = findViewById(R.id.filter_toilet);
         filter_handicap = findViewById(R.id.filter_handicap);
         filter_kid = findViewById(R.id.filter_kid);
+
+        filter_btn_login=findViewById(R.id.filter_btn_login);
+        filter_btn_join=findViewById(R.id.filter_btn_join);
 
         if(GpsTracker.gender.equals("both")){
             filter_both.setChecked(true);
@@ -113,7 +119,9 @@ public class Filter extends AppCompatActivity {
                 }else GpsTracker.kid = Integer.MAX_VALUE;
             }
         });
+
     }
+
 
     public void btn_radius_onclick(View view){
 
