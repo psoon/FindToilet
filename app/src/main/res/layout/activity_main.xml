@@ -129,7 +129,8 @@
                             android:paddingHorizontal="18dip"
                             android:text="신고"
                             android:textColor="#000000"
-                            android:textSize="15sp" />
+                            android:textSize="15sp"
+                            android:onClick="siren_onclick"/>
                     </LinearLayout>
 
                     <!--주소-->
