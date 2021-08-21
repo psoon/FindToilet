@@ -285,15 +285,15 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         startActivity(intent);
     }
 
-    public void login(View view) {
-        Intent intent = new Intent(this, loginActivity.class);
-        startActivity(intent);
-    }
-
-    public void join(View view) {
-        Intent intent = new Intent(this, joinUsActivity.class);
-        startActivity(intent);
-    }
+//    public void login(View view) {
+//        Intent intent = new Intent(this, loginActivity.class);
+//        startActivity(intent);
+//    }
+//
+//    public void join(View view) {
+//        Intent intent = new Intent(this, joinUsActivity.class);
+//        startActivity(intent);
+//    }
     public void askPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);

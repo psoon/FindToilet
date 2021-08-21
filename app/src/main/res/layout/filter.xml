@@ -18,7 +18,7 @@
             android:layout_marginHorizontal="10dp"
             android:textColor="@color/white"
             android:background="@drawable/btn_blue"
-            android:text="로그인"/>
+            android:text="로그인" />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,7 +27,7 @@
             android:layout_marginHorizontal="10dp"
             android:textColor="@color/white"
             android:background="@drawable/btn_blue"
-            android:text="회원가입"/>
+            android:text="회원가입" />
     </LinearLayout>
 
     <TextView

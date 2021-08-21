@@ -120,8 +120,21 @@ public class Filter extends AppCompatActivity {
             }
         });
 
+        filter_btn_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Filter.this, loginActivity.class);
+                startActivity(intent);
+            }
+        });
+        filter_btn_join.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Filter.this, joinUsActivity.class);
+                startActivity(intent);
+            }
+        });
     }
-
 
     public void btn_radius_onclick(View view){
 

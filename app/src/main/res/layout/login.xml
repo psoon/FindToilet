@@ -23,28 +23,34 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="이메일/비밀번호입력"/>
+
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="@color/black">
+
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_login_id"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="이메일"/>
+                android:hint="이메일" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             app:passwordToggleEnabled="true"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:boxStrokeColor="#000000"
+            app:hintTextColor="@color/black">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/et_login_pw"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="비밀번호"
-                android:inputType="textPassword"/>
+                android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
         <CheckBox
             android:layout_width="wrap_content"
@@ -57,7 +63,6 @@
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:textSize="30dp"
-            android:backgroundTint="#6A6A6A"
             android:text="로그인"/>
     </LinearLayout>
 
