@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.hardware.input.InputManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -16,9 +17,12 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -35,8 +39,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mainactivity.category_search.CategoryResult;
 import com.example.mainactivity.category_search.Document;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import net.daum.mf.map.api.MapCircle;
@@ -52,13 +64,13 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements MapView.POIItemEventListener, MapView.MapViewEventListener{
     public static EditText editTextQuery;
-    ProgressDialog loading;
     RecyclerView recyclerview;
     ImageButton btn_filter;
     FloatingActionButton fab_refresh;
-    Button btn_search,btn_star,btn_navigation,btn_siren;
+    Button btn_search,btn_star,btn_navigation,btn_siren, btn_comment_summit;
     SlidingUpPanelLayout panel;
-    TextView location_name, location_addr, tv_gender, tv_serviceTime,comment;
+    TextView location_name, location_addr, tv_gender, tv_serviceTime;
+    EditText comment;
     String [] tvStr = {"대변기수", "소변기수", "장애인 대변기수", "장애인소변기수", "유아용 대변기수", "유아용소변기수", "대변기수", "장애인 대변기수", "유아용대변기수"};
     Integer[] tvId = {R.id.tv_male_toilet, R.id.tv_male_urinal, R.id.tv_male_handiToilet, R.id.tv_male_handiUrinal, R.id.tv_male_kidToilet, R.id.tv_male_kidUrinal,
                         R.id.tv_female_toilet, R.id.tv_female_handiToilet, R.id.tv_female_kidToilet};
@@ -69,6 +81,10 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     public static String[][] dataArr = new String[35754][19];
     public static double current_latitude = 37.5665, current_longitude = 126.9780;
     public static MapCircle circleByLocal;
+    private static FirebaseUser user;
+
+    private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
+    private DatabaseReference databaseReference = mDatabase.getReference();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,7 +107,8 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         location_addr = findViewById(R.id.location_addr);
         tv_gender = findViewById(R.id.tv_gender);
         tv_serviceTime = findViewById(R.id.tv_serviceTime);
-        comment=findViewById(R.id.comment);
+        btn_comment_summit=findViewById(R.id.btn_comment_summit);
+        comment = findViewById(R.id.comment);
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -202,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                 btn_star.setSelected(!btn_star.isSelected());
             }
         });
+
     }
 
     @Override
@@ -288,15 +306,6 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         startActivity(intent);
     }
 
-//    public void login(View view) {
-//        Intent intent = new Intent(this, loginActivity.class);
-//        startActivity(intent);
-//    }
-//
-//    public void join(View view) {
-//        Intent intent = new Intent(this, joinUsActivity.class);
-//        startActivity(intent);
-//    }
     public void askPermission(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION);
@@ -370,26 +379,47 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             }
         });
         //댓글 눌렀을 때 로그인 대화상자 뜨기 - 로그인 안 했을 경우 뜨게 하는걸로 변경해야함
-        comment.setOnClickListener(new View.OnClickListener(){
+        btn_comment_summit.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("로그인이 필요한 서비스 입니다.");
-                final String[] array = new String[] {"로그인","회원가입"};
-                builder.setItems(array, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        if(i==0){
-                            Intent intent = new Intent(MainActivity.this, loginActivity.class);
-                            startActivity(intent);
-                        }else{
-                            Intent intent = new Intent(MainActivity.this, joinUsActivity.class);
-                            startActivity(intent);
+                if(user==null){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                    builder.setTitle("로그인이 필요한 서비스 입니다.");
+                    final String[] array = new String[] {"로그인","회원가입"};
+                    builder.setItems(array, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            if(i==0){
+                                Intent intent = new Intent(MainActivity.this, loginActivity.class);
+                                startActivity(intent);
+                            }else{
+                                Intent intent = new Intent(MainActivity.this, joinUsActivity.class);
+                                startActivity(intent);
+                            }
                         }
-                    }
-                });
-                builder.setPositiveButton("닫기",null);
-                builder.show();
+                    });
+                    builder.setPositiveButton("닫기",null);
+                    builder.show();
+                } else{
+//                    uid,username,toiletnum,createat,content
+                    CommentModel commentModel = new CommentModel();
+                    commentModel.uid = user.getUid();
+                    commentModel.content = comment.getText().toString();
+                    commentModel.createAt = ServerValue.TIMESTAMP;
+                    databaseReference.child("Users").child(user.getUid()).child("nickName").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                            commentModel.userName = task.getResult().getValue(String.class);
+                        }
+                    });
+                    commentModel.toiletNum = Integer.toString(tag);
+                    databaseReference.child("Toilet_Comment").child(dataArr[tag][1]).setValue(commentModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            comment.setText("");
+                        }
+                    });
+                }
             }
         });
 
@@ -492,4 +522,15 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         builder.setTitle("화장실 어디야");
         builder.show();
     }
+    public static void setUser(FirebaseUser user) {
+        MainActivity.user = user;
+    }
+
+    @Override
+    protected void onDestroy() {
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        mAuth.signOut();
+        super.onDestroy();
+    }
+
 }

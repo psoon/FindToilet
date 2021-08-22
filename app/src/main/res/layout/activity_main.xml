@@ -364,14 +364,20 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical"
+                        android:orientation="horizontal"
                         android:layout_margin="10dp">
-                        <TextView
+                        <EditText
                             android:id="@+id/comment"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="댓글"/>
-
+                            android:hint="댓글을 입력하세요"
+                            android:layout_weight="2"/>
+                        <Button
+                            android:id="@+id/btn_comment_summit"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="작성"
+                            android:layout_weight="1"/>
                     </LinearLayout>
 
                 </LinearLayout>

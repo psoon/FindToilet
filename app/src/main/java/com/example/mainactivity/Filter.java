@@ -1,17 +1,29 @@
 package com.example.mainactivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import net.daum.mf.map.api.MapCircle;
 import net.daum.mf.map.api.MapPoint;
@@ -24,8 +36,9 @@ import static com.example.mainactivity.MainActivity.mapView;
 public class Filter extends AppCompatActivity {
     EditText edit_radius;
     CheckBox filter_both, filter_seperate,  filter_handicap, filter_kid;
-    Button filter_btn_login, filter_btn_join;
-//    CheckBox filter_urinal, filter_toilet,
+    Button filter_btn_login, filter_btn_join, filter_logout;
+    TextView nickname;
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
     protected void onCreate(Bundle saveInstanceState) {
 
         super.onCreate(saveInstanceState);
@@ -34,13 +47,53 @@ public class Filter extends AppCompatActivity {
         edit_radius.setHint("현재설정 : " + GpsTracker.radius + "m");
         filter_both = findViewById(R.id.filter_both);
         filter_seperate = findViewById(R.id.filter_seperate);
-//        filter_urinal = findViewById(R.id.filter_urinal);
-//        filter_toilet = findViewById(R.id.filter_toilet);
         filter_handicap = findViewById(R.id.filter_handicap);
         filter_kid = findViewById(R.id.filter_kid);
 
-        filter_btn_login=findViewById(R.id.filter_btn_login);
-        filter_btn_join=findViewById(R.id.filter_btn_join);
+        FrameLayout content = findViewById(R.id.filter_framelayout);
+        LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        if(mAuth.getCurrentUser()!=null){
+            inflater.inflate(R.layout.inflater_user_logon, content, true);
+            filter_logout = findViewById(R.id.btn_signout);
+            nickname = findViewById(R.id.inflater_user_nickname);
+            DatabaseReference databaseReference = FirebaseDatabase.getInstance().getReference();
+            databaseReference.child("Users").child(mAuth.getUid()).child("nickName").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DataSnapshot> task) {
+                    nickname.setText(task.getResult().getValue(String.class) + " 님");
+                }
+            });
+            filter_logout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mAuth.signOut();
+                    startActivity(new Intent(Filter.this, Filter.class));
+                    finish();
+                }
+            });
+        }else{
+            inflater.inflate(R.layout.inflater_user_null, content, true);
+            filter_btn_login=findViewById(R.id.filter_btn_login);
+            filter_btn_join=findViewById(R.id.filter_btn_join);
+            filter_btn_login.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Filter.this, loginActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+            filter_btn_join.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(Filter.this, joinUsActivity.class);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
+
+
 
         if(GpsTracker.gender.equals("both")){
             filter_both.setChecked(true);
@@ -49,12 +102,6 @@ public class Filter extends AppCompatActivity {
             filter_seperate.setChecked(true);
         }else filter_both.setChecked(true);
 
-//        if(GpsTracker.urinal == Integer.MAX_VALUE){
-//            filter_urinal.setChecked(false);
-//        }else filter_urinal.setChecked(true);
-//        if(GpsTracker.toilet == Integer.MAX_VALUE){
-//            filter_toilet.setChecked(false);
-//        }else filter_toilet.setChecked(true);
         if(GpsTracker.handicap == Integer.MAX_VALUE){
             filter_handicap.setChecked(false);
         }else filter_handicap.setChecked(true);
@@ -87,22 +134,6 @@ public class Filter extends AppCompatActivity {
                 }
             }
         });
-//        filter_urinal.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                if(filter_urinal.isChecked()){
-//                    GpsTracker.urinal = 0;
-//                }else GpsTracker.urinal = Integer.MAX_VALUE;
-//            }
-//        });
-//        filter_toilet.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-//            @Override
-//            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-//                if(filter_toilet.isChecked()){
-//                    GpsTracker.toilet = 0;
-//                }else GpsTracker.toilet = Integer.MAX_VALUE;
-//            }
-//        });
         filter_handicap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
@@ -120,20 +151,6 @@ public class Filter extends AppCompatActivity {
             }
         });
 
-        filter_btn_login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Filter.this, loginActivity.class);
-                startActivity(intent);
-            }
-        });
-        filter_btn_join.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Filter.this, joinUsActivity.class);
-                startActivity(intent);
-            }
-        });
     }
 
     public void btn_radius_onclick(View view){
