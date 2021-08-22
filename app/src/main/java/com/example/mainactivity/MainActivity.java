@@ -58,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     FloatingActionButton fab_refresh;
     Button btn_search,btn_star,btn_navigation,btn_siren;
     SlidingUpPanelLayout panel;
-    TextView location_name, location_addr, tv_gender, tv_serviceTime;
+    TextView location_name, location_addr, tv_gender, tv_serviceTime,comment;
     String [] tvStr = {"대변기수", "소변기수", "장애인 대변기수", "장애인소변기수", "유아용 대변기수", "유아용소변기수", "대변기수", "장애인 대변기수", "유아용대변기수"};
     Integer[] tvId = {R.id.tv_male_toilet, R.id.tv_male_urinal, R.id.tv_male_handiToilet, R.id.tv_male_handiUrinal, R.id.tv_male_kidToilet, R.id.tv_male_kidUrinal,
                         R.id.tv_female_toilet, R.id.tv_female_handiToilet, R.id.tv_female_kidToilet};
@@ -91,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         location_addr = findViewById(R.id.location_addr);
         tv_gender = findViewById(R.id.tv_gender);
         tv_serviceTime = findViewById(R.id.tv_serviceTime);
+        comment=findViewById(R.id.comment);
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -365,6 +366,29 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                     }
                 });
                 builder.setTitle("신고");
+                builder.show();
+            }
+        });
+        //댓글 눌렀을 때 로그인 대화상자 뜨기 - 로그인 안 했을 경우 뜨게 하는걸로 변경해야함
+        comment.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("로그인이 필요한 서비스 입니다.");
+                final String[] array = new String[] {"로그인","회원가입"};
+                builder.setItems(array, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        if(i==0){
+                            Intent intent = new Intent(MainActivity.this, loginActivity.class);
+                            startActivity(intent);
+                        }else{
+                            Intent intent = new Intent(MainActivity.this, joinUsActivity.class);
+                            startActivity(intent);
+                        }
+                    }
+                });
+                builder.setPositiveButton("닫기",null);
                 builder.show();
             }
         });

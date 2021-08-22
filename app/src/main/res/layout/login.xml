@@ -20,6 +20,7 @@
         android:padding="10dp"
         android:orientation="vertical">
         <RadioButton
+            android:id="@+id/radio_login"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="이메일/비밀번호입력"/>
