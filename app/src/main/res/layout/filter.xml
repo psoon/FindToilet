@@ -93,7 +93,7 @@
         android:lines="1"
         android:textSize="25sp"
         android:text="편의시설"
-        android:drawableLeft="@drawable/filter3"
+        android:drawableLeft="@drawable/filter2"
         android:drawablePadding="10dp"
         android:orientation="horizontal"/>
     <CheckBox
