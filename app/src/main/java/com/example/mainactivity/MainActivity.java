@@ -1,14 +1,11 @@
 package com.example.mainactivity;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.hardware.input.InputManager;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
@@ -17,12 +14,10 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -46,9 +41,11 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import net.daum.mf.map.api.MapCircle;
@@ -109,11 +106,13 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         tv_serviceTime = findViewById(R.id.tv_serviceTime);
         btn_comment_summit=findViewById(R.id.btn_comment_summit);
         comment = findViewById(R.id.comment);
+
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
         recyclerview.setLayoutManager(layoutManager);
         recyclerview.setAdapter(locationAdapter);
+
         mapView = new MapView(this);
         RelativeLayout mapViewContainer = findViewById(R.id.map_view);
         mapViewContainer.addView(mapView);
@@ -348,6 +347,30 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         }catch(Exception e){
             Toast.makeText(MainActivity.this, "정보를 불러올 수 없습니다.", Toast.LENGTH_LONG).show();
         }
+
+        //댓글 불러오기 구현
+        ArrayList<CommentModel> commentArrayList = new ArrayList<>();
+        RecyclerView comment_recyclerview = findViewById(R.id.recyclerView_comment);
+
+        CommentAdapter commentAdapter = new CommentAdapter(commentArrayList, MainActivity.this, comment_recyclerview);
+        comment_recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        comment_recyclerview.setLayoutManager(layoutManager2);
+        comment_recyclerview.setAdapter(commentAdapter);
+
+        commentAdapter.notifyDataSetChanged();
+        FirebaseDatabase.getInstance().getReference().child("Toilet_Comment").child(dataArr[tag][1]).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DataSnapshot> task) {
+                for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                    commentAdapter.addItem(dataSnapshot.getValue(CommentModel.class));
+                }
+                commentAdapter.notifyDataSetChanged();
+            }
+        });
+
+
+
         //길찾기 버튼 클릭
         btn_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -401,24 +424,26 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                     builder.setPositiveButton("닫기",null);
                     builder.show();
                 } else{
-//                    uid,username,toiletnum,createat,content
+                    //댓글 작성 구현
                     CommentModel commentModel = new CommentModel();
-                    commentModel.uid = user.getUid();
                     commentModel.content = comment.getText().toString();
+                    commentModel.uid = user.getUid();
                     commentModel.createAt = ServerValue.TIMESTAMP;
+                    commentModel.toiletNum = Integer.toString(tag);
                     databaseReference.child("Users").child(user.getUid()).child("nickName").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
-                            commentModel.userName = task.getResult().getValue(String.class);
+                            String value = task.getResult().getValue(String.class);
+                            commentModel.userName = value;
+                            databaseReference.child("Toilet_Comment").child(dataArr[tag][1]).child(comment.getText().toString()).setValue(commentModel).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    comment.setText("");
+                                }
+                            });
                         }
                     });
-                    commentModel.toiletNum = Integer.toString(tag);
-                    databaseReference.child("Toilet_Comment").child(dataArr[tag][1]).setValue(commentModel).addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            comment.setText("");
-                        }
-                    });
+
                 }
             }
         });

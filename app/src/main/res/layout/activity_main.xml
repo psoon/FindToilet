@@ -364,20 +364,32 @@
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
+                        android:orientation="vertical"
                         android:layout_margin="10dp">
-                        <EditText
-                            android:id="@+id/comment"
+                        <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:hint="댓글을 입력하세요"
-                            android:layout_weight="2"/>
-                        <Button
-                            android:id="@+id/btn_comment_summit"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="작성"
-                            android:layout_weight="1"/>
+                            android:orientation="horizontal"
+                            android:layout_margin="10dp">
+                            <EditText
+                                android:id="@+id/comment"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:hint="댓글을 입력하세요"
+                                android:layout_weight="2"/>
+                            <Button
+                                android:id="@+id/btn_comment_summit"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="작성"
+                                android:layout_weight="1"/>
+                        </LinearLayout>
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/recyclerView_comment"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+                        </androidx.recyclerview.widget.RecyclerView>
+
                     </LinearLayout>
 
                 </LinearLayout>
