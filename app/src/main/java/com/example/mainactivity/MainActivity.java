@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 
 
+
         editTextQuery.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
