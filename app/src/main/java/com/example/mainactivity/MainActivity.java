@@ -121,10 +121,31 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
 
         askPermission();
         mapView.setPOIItemEventListener(this);
+        mapView.setMapViewEventListener(this);
         panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 
 
 
+        panel.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
+            @Override
+            public void onPanelSlide(View panel, float slideOffset) { }
+            @Override
+            public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
+                if(newState == SlidingUpPanelLayout.PanelState.HIDDEN){
+                    fab_refresh.setVisibility(View.VISIBLE);
+                }else if(newState == SlidingUpPanelLayout.PanelState.EXPANDED){
+                    fab_refresh.setVisibility(View.INVISIBLE);
+                }else if(newState == SlidingUpPanelLayout.PanelState.COLLAPSED){
+                    fab_refresh.setVisibility(View.VISIBLE);
+                }
+            }
+        });
+        editTextQuery.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+            }
+        });
         editTextQuery.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -354,8 +375,8 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         RecyclerView comment_recyclerview = findViewById(R.id.recyclerView_comment);
 
         CommentAdapter commentAdapter = new CommentAdapter(commentArrayList, MainActivity.this, comment_recyclerview);
-        comment_recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
-        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        comment_recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.HORIZONTAL));
+        LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         comment_recyclerview.setLayoutManager(layoutManager2);
         comment_recyclerview.setAdapter(commentAdapter);
 
@@ -439,7 +460,9 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                             databaseReference.child("Toilet_Comment").child(dataArr[tag][1]).child(comment.getText().toString()).setValue(commentModel).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
+                                    Toast.makeText(MainActivity.this, "댓글이 작성되었습니다.", Toast.LENGTH_SHORT).show();
                                     comment.setText("");
+                                    commentAdapter.notifyDataSetChanged();
                                 }
                             });
                         }
@@ -452,51 +475,17 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     }
 
     @Override
-    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) {
-
-    }
-
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) { }
     @Override
-    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) {
-
-    }
-
+    public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem, MapPOIItem.CalloutBalloonButtonType calloutBalloonButtonType) { }
     @Override
-    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) {
-
-    }
-
+    public void onDraggablePOIItemMoved(MapView mapView, MapPOIItem mapPOIItem, MapPoint mapPoint) { }
     @Override
-    public void onMapViewInitialized(MapView mapView) {
-
-    }
-
+    public void onMapViewInitialized(MapView mapView) { }
     @Override
-    public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
-        mapView = MainActivity.mapView;
-        mapView.removeAllPOIItems();
-        current_latitude = mapPoint.getMapPointGeoCoord().latitude;
-        current_longitude = mapPoint.getMapPointGeoCoord().longitude;
-        mapView.removeCircle(circleByLocal);
-        circleByLocal = new MapCircle(
-                MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude),
-                GpsTracker.radius,
-                Color.argb(128, 0, 0, 0), // strokeColor
-                Color.argb(40, 0, 0, 255)
-        );
-        mapView.addCircle(circleByLocal);
-        MapPOIItem markerOnCenter = new MapPOIItem();
-        markerOnCenter.setItemName("기준점");
-        markerOnCenter.setMapPoint(MapPoint.mapPointWithGeoCoord(current_latitude, current_longitude));
-        markerOnCenter.setMarkerType(MapPOIItem.MarkerType.BluePin);
-        mapView.addPOIItem(markerOnCenter);
-        GpsTracker.markerUpdate(current_latitude, current_longitude);
-    }
-
+    public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) { }
     @Override
-    public void onMapViewZoomLevelChanged(MapView mapView, int i) {
-
-    }
+    public void onMapViewZoomLevelChanged(MapView mapView, int i) { }
 
     @Override
     public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
@@ -504,29 +493,19 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     }
 
     @Override
-    public void onMapViewDoubleTapped(MapView mapView, MapPoint mapPoint) {
-
-    }
+    public void onMapViewDoubleTapped(MapView mapView, MapPoint mapPoint) { }
 
     @Override
-    public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) {
-
-    }
+    public void onMapViewLongPressed(MapView mapView, MapPoint mapPoint) { }
 
     @Override
-    public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) {
-
-    }
+    public void onMapViewDragStarted(MapView mapView, MapPoint mapPoint) { }
 
     @Override
-    public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) {
-
-    }
+    public void onMapViewDragEnded(MapView mapView, MapPoint mapPoint) { }
 
     @Override
-    public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) {
-
-    }
+    public void onMapViewMoveFinished(MapView mapView, MapPoint mapPoint) { }
 
 
 
@@ -550,6 +529,10 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     }
     public static void setUser(FirebaseUser user) {
         MainActivity.user = user;
+    }
+
+    public static FirebaseUser getUser() {
+        return user;
     }
 
     @Override
