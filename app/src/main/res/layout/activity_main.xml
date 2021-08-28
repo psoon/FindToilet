@@ -54,7 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="bottom"
-            app:umanoPanelHeight="100dp">
+            app:umanoPanelHeight="85dp">
             <RelativeLayout
                 android:id="@+id/map_view"
                 android:layout_width="match_parent"
@@ -84,7 +84,7 @@
                         android:layout_gravity="center"
                         android:layout_marginBottom="10dp"
                         android:layout_weight="1"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
 
                     <androidx.appcompat.widget.AppCompatButton
                         android:layout_width="280dp"
@@ -145,7 +145,7 @@
                         android:id="@+id/tv_serviceTime"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="3dp"
+                        android:layout_marginHorizontal="10dp"
                         android:text="운영시간: "
                         android:textSize="10sp"/>
 
@@ -153,7 +153,7 @@
                         android:id="@+id/tv_gender"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_margin="3dp"
+                        android:layout_marginHorizontal="10dp"
                         android:text="남여공용 여부: "
                         android:textSize="10sp"/>
 
@@ -370,7 +370,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="horizontal"
-                            android:layout_margin="10dp">
+                            android:layout_marginHorizontal="10dp"
+                            android:layout_marginVertical="5dp">
                             <EditText
                                 android:id="@+id/comment"
                                 android:layout_width="match_parent"
