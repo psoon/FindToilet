@@ -348,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         try{
             panel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             location_name.setText(dataArr[tag][1]);
-            if(dataArr[tag][2]!=null){
+            if(dataArr[tag][2]!=null && !dataArr[tag][2].equals("")){
                 location_addr.setText(dataArr[tag][2]);
             } else location_addr.setText(dataArr[tag][3]);
             if(dataArr[tag][4]!=null){
