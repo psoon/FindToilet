@@ -165,20 +165,24 @@
                         android:layout_margin="10dp"
                         android:rowCount="6">
 
+
+
                         <TextView
-                            android:layout_width="100dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_row="0"
                             android:layout_rowSpan="6"
                             android:layout_column="0"
+                            android:layout_columnWeight="2"
                             android:layout_gravity="fill_vertical"
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:text="남성용" />
                         <LinearLayout
-                            android:layout_width="140dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:layout_columnWeight="4"
                             >
                             <TextView
                                 android:layout_width="match_parent"
@@ -223,9 +227,10 @@
                                 android:text="유아용 소변기수" />
                         </LinearLayout>
                         <LinearLayout
-                            android:layout_width="140dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:layout_columnWeight="1"
                             >
                             <TextView
                                 android:id="@+id/tv_male_toilet"
@@ -233,7 +238,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_row="0"
                                 android:layout_column="1"
-                                android:gravity="right"
                                 android:text="" />
 
                             <TextView
@@ -242,7 +246,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_row="1"
                                 android:layout_column="1"
-                                android:gravity="right"
                                 android:text="" />
 
                             <TextView
@@ -251,7 +254,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_row="2"
                                 android:layout_column="1"
-                                android:gravity="right"
                                 android:text="" />
 
                             <TextView
@@ -260,7 +262,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_row="3"
                                 android:layout_column="1"
-                                android:gravity="right"
                                 android:text="" />
 
                             <TextView
@@ -269,7 +270,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_row="4"
                                 android:layout_column="1"
-                                android:gravity="right"
                                 android:text="" />
 
                             <TextView
@@ -278,10 +278,10 @@
                                 android:layout_height="wrap_content"
                                 android:layout_row="5"
                                 android:layout_column="1"
-                                android:gravity="right"
                                 android:text="" />
 
                         </LinearLayout>
+
                     </GridLayout>
 
                     <GridLayout
@@ -293,19 +293,21 @@
                         android:rowCount="3">
 
                         <TextView
-                            android:layout_width="100dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_row="0"
                             android:layout_rowSpan="3"
                             android:layout_column="0"
+                            android:layout_columnWeight="2"
                             android:layout_gravity="fill_vertical"
                             android:textStyle="bold"
                             android:textColor="@color/black"
                             android:text="여성용" />
                         <LinearLayout
-                            android:layout_width="140dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:orientation="vertical"
+                            android:layout_columnWeight="4"
                             >
                             <TextView
                                 android:layout_width="match_parent"
@@ -329,16 +331,17 @@
                                 android:text="유아용 대변기수" />
                         </LinearLayout>
                         <LinearLayout
-                            android:layout_width="140dp"
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:orientation="vertical">
+                            android:orientation="vertical"
+                            android:layout_columnWeight="1"
+                            >
                             <TextView
                                 android:id="@+id/tv_female_toilet"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:layout_row="0"
                                 android:layout_column="1"
-                                android:gravity="right"
                                 android:text="" />
 
                             <TextView
@@ -347,7 +350,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_row="1"
                                 android:layout_column="1"
-                                android:gravity="right"
                                 android:text="" />
 
                             <TextView
@@ -356,8 +358,8 @@
                                 android:layout_height="wrap_content"
                                 android:layout_row="2"
                                 android:layout_column="1"
-                                android:gravity="right"
                                 android:text="" />
+
                         </LinearLayout>
 
                     </GridLayout>
