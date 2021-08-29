@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
@@ -87,7 +88,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         Button item_btn_report, item_btn_modify, item_btn_delete;
         private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
         private DatabaseReference databaseReference = mDatabase.getReference();
-
+        private FirebaseAuth mAuth = FirebaseAuth.getInstance();
         public CommentViewHolder(@NonNull final View itemView) {
             super(itemView);
             item_user = itemView.findViewById(R.id.item_user);
@@ -139,6 +140,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                                     CommentModel model = items.get(position);
                                     try{
                                         String str = et_modify.getText().toString();
+                                        if(str.length()<=0) {
+                                            Toast.makeText(view.getContext(), "빈 내용입니다.", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
                                         items.remove(position);
                                         databaseReference.child("Toilet_Comment").child(MainActivity.dataArr[Integer.parseInt(model.toiletNum)][1]).child(model.content).setValue(null);
 
@@ -154,7 +159,9 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                                                 notifyDataSetChanged();
                                             }
                                         });
-                                    }catch(Exception e){ }
+                                    }catch(Exception e){
+                                        Toast.makeText(view.getContext(), "공백 혹은 잘못된 입력입니다.", Toast.LENGTH_SHORT).show();
+                                    }
                                 }
                             })
                             .setNegativeButton("취소", new DialogInterface.OnClickListener() {
@@ -162,6 +169,70 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                                 public void onClick(DialogInterface dialogInterface, int i) { }
                             })
                             .show();
+                }
+            });
+            item_btn_report.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    CommentModel reportModel = items.get(position);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                    builder.setMessage("신고하시겠습니까?");
+                    builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            final LinearLayout linearLayout = (LinearLayout)View.inflate(view.getContext(), R.layout.comment_report, null);
+                            new AlertDialog.Builder(view.getContext())
+                                    .setView(linearLayout)
+                                    .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) {
+                                            EditText et_report = linearLayout.findViewById(R.id.et_report);
+                                            CommentModel model = new CommentModel();
+                                            try{
+                                                model.content = et_report.getText().toString();
+                                            }catch(Exception e){
+                                                Toast.makeText(view.getContext(), "공백 혹은 잘못된 입력입니다.", Toast.LENGTH_SHORT).show();
+                                                return;
+                                            }
+                                            model.createAt = ServerValue.TIMESTAMP;
+
+                                            if(mAuth.getCurrentUser()!= null){
+                                                model.uid = mAuth.getCurrentUser().getUid();
+                                                databaseReference.child("Users").child(mAuth.getCurrentUser().getUid()).child("nickName").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                                        model.userName = task.getResult().getValue(String.class);
+                                                        model.toiletNum = reportModel.getToiletNum();
+                                                        databaseReference.child("Report").child(MainActivity.dataArr[Integer.parseInt(model.toiletNum)][1]).child(model.content).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                            @Override
+                                                            public void onComplete(@NonNull Task<Void> task) {
+                                                                Toast.makeText(view.getContext(), "신고되었습니다.", Toast.LENGTH_SHORT).show();
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                            else{
+                                                model.toiletNum = reportModel.getToiletNum();
+                                                databaseReference.child("Report").child(MainActivity.dataArr[Integer.parseInt(model.toiletNum)][1]).child(model.content).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<Void> task) {
+                                                        Toast.makeText(view.getContext(), "신고되었습니다.", Toast.LENGTH_SHORT).show();
+                                                    }
+                                                });
+                                            }
+
+                                        }
+                                    })
+                                    .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialogInterface, int i) { }
+                                    })
+                                    .show();
+                            //신고할 경우 구현
+                        }
+                    }).show();
                 }
             });
         }

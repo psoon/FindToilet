@@ -14,11 +14,11 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -41,11 +41,9 @@ import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
-import com.google.firebase.database.ValueEventListener;
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import net.daum.mf.map.api.MapCircle;
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     RecyclerView recyclerview;
     ImageButton btn_filter;
     FloatingActionButton fab_refresh;
-    Button btn_search,btn_star,btn_navigation,btn_siren, btn_comment_summit;
+    Button btn_search, btn_favorites,btn_navigation,btn_siren, btn_comment_summit;
     SlidingUpPanelLayout panel;
     TextView location_name, location_addr, tv_gender, tv_serviceTime;
     EditText comment;
@@ -79,6 +77,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     public static double current_latitude = 37.5665, current_longitude = 126.9780;
     public static MapCircle circleByLocal;
     private static FirebaseUser user;
+
 
     private FirebaseDatabase mDatabase = FirebaseDatabase.getInstance();
     private DatabaseReference databaseReference = mDatabase.getReference();
@@ -96,7 +95,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         btn_filter = findViewById(R.id.btn_filter);
         fab_refresh= findViewById(R.id.fab_refresh);
         btn_search = findViewById(R.id.btnSearch);
-        btn_star=findViewById(R.id.btn_star);
+        btn_favorites =findViewById(R.id.btn_favorites);
         btn_navigation=findViewById(R.id.btn_navigation);
         btn_siren=findViewById(R.id.btn_siren);
         panel = findViewById(R.id.slidingPanel);
@@ -123,8 +122,6 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         mapView.setPOIItemEventListener(this);
         mapView.setMapViewEventListener(this);
         panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
-
-
 
         panel.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
@@ -234,10 +231,10 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             }
         });
         //즐겨찾기 버튼 누르면 색 변경-위치마다 다르게 수정해야함
-        btn_star.setOnClickListener(new View.OnClickListener() {
+        btn_favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                btn_star.setSelected(!btn_star.isSelected());
+                btn_favorites.setSelected(!btn_favorites.isSelected());
             }
         });
 
@@ -411,6 +408,46 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                 builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        final LinearLayout linearLayout = (LinearLayout)View.inflate(MainActivity.this, R.layout.comment_report, null);
+                        new AlertDialog.Builder(MainActivity.this)
+                                .setView(linearLayout)
+                                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+                                        EditText et_report = findViewById(R.id.et_report);
+                                        CommentModel model = new CommentModel();
+                                        try{
+                                            model.content = et_report.getText().toString();
+                                        }catch(Exception e){
+                                            Toast.makeText(MainActivity.this, "공백 혹은 잘못된 입력입니다.", Toast.LENGTH_SHORT).show();
+                                            return;
+                                        }
+                                        model.createAt = ServerValue.TIMESTAMP;
+                                        if(user!= null){
+                                            try{
+                                                model.uid = user.getUid();
+                                                model.userName =  databaseReference.child("Users").child(user.getUid()).child("nickName").get().getResult().getValue(String.class);
+                                            }catch(Exception e ){
+                                                Toast.makeText(MainActivity.this, "실패하였습니다.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        }
+                                        model.toiletNum = Integer.toString(tag);
+                                        databaseReference.child("Report").child(dataArr[tag][1]).child(model.content).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                Toast.makeText(MainActivity.this, "신고되었습니다.", Toast.LENGTH_SHORT).show();
+                                            }
+                                        });
+
+                                    }
+                                })
+                                .setNegativeButton("취소", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                                    }
+                                })
+                                .show();
                         //신고할 경우 구현
                     }
                 });
@@ -452,6 +489,10 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                     commentModel.uid = user.getUid();
                     commentModel.createAt = ServerValue.TIMESTAMP;
                     commentModel.toiletNum = Integer.toString(tag);
+                    if(commentModel.content.length()<=0) {
+                        Toast.makeText(MainActivity.this, "공백 혹은 잘못된 입력입니다.", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
                     databaseReference.child("Users").child(user.getUid()).child("nickName").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -467,7 +508,6 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                             });
                         }
                     });
-
                 }
             }
         });

@@ -54,6 +54,7 @@
                 android:inputType="textPassword" />
         </com.google.android.material.textfield.TextInputLayout>
         <CheckBox
+            android:id="@+id/autoLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="자동 로그인"/>
