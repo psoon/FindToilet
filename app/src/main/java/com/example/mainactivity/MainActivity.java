@@ -551,6 +551,10 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
 
     @Override
     public void onBackPressed() {
+        if(panel.getPanelState()==SlidingUpPanelLayout.PanelState.EXPANDED||panel.getPanelState()==SlidingUpPanelLayout.PanelState.COLLAPSED) {
+            panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+            return;
+        }
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("종료하시겠습니까?");
         builder.setPositiveButton("예", new DialogInterface.OnClickListener() {
