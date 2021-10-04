@@ -94,10 +94,6 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        if ( Build.VERSION.SDK_INT >= 23 ){
-            ActivityCompat.requestPermissions(this, new String[]{
-                    Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO},PERMISSION); }
-
         FirebaseApp.initializeApp(this);
 
         ArrayList<Document> documentArrayList = new ArrayList<>();
@@ -116,16 +112,23 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         tv_serviceTime = findViewById(R.id.tv_serviceTime);
         btn_comment_summit=findViewById(R.id.btn_comment_summit);
         comment = findViewById(R.id.comment);
-
         btn_stt = findViewById(R.id.btn_stt);
 
         intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,getPackageName());
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
         btn_stt.setOnClickListener(v -> {
-            speechRecognizer=SpeechRecognizer.createSpeechRecognizer(this);
-            speechRecognizer.setRecognitionListener(listener);
-            speechRecognizer.startListening(intent);
+            if ( Build.VERSION.SDK_INT >= 23 ){
+                int SttPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+                if (SttPermissionCheck == PackageManager.PERMISSION_DENIED) {
+                    ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO},PERMISSION);
+                } else {
+                    speechRecognizer=SpeechRecognizer.createSpeechRecognizer(this);
+                    speechRecognizer.setRecognitionListener(listener);
+                    speechRecognizer.startListening(intent);
+                }
+            }
         });
 
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
