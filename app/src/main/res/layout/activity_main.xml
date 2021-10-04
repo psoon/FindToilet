@@ -24,6 +24,12 @@
             android:id="@+id/editTextQuery">
             <requestFocus/>
         </EditText>
+        <ImageButton
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_margin="5dp"
+            android:src="@drawable/sst"
+            android:id="@+id/btn_stt"/>
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

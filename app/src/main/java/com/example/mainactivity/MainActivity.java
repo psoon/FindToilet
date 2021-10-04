@@ -12,6 +12,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -60,12 +63,16 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity implements MapView.POIItemEventListener, MapView.MapViewEventListener{
     public static EditText editTextQuery;
     RecyclerView recyclerview;
-    ImageButton btn_filter;
+    ImageButton btn_filter, btn_stt;
     FloatingActionButton fab_refresh;
     Button btn_search, btn_favorites,btn_navigation,btn_siren, btn_comment_summit;
     SlidingUpPanelLayout panel;
     TextView location_name, location_addr, tv_gender, tv_serviceTime;
     EditText comment;
+    Intent intent;
+    SpeechRecognizer speechRecognizer;
+    final int PERMISSION = 1;
+
     String [] tvStr = {"대변기수", "소변기수", "장애인 대변기수", "장애인소변기수", "유아용 대변기수", "유아용소변기수", "대변기수", "장애인 대변기수", "유아용대변기수"};
     Integer[] tvId = {R.id.tv_male_toilet, R.id.tv_male_urinal, R.id.tv_male_handiToilet, R.id.tv_male_handiUrinal, R.id.tv_male_kidToilet, R.id.tv_male_kidUrinal,
                         R.id.tv_female_toilet, R.id.tv_female_handiToilet, R.id.tv_female_kidToilet};
@@ -87,6 +94,10 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        if ( Build.VERSION.SDK_INT >= 23 ){
+            ActivityCompat.requestPermissions(this, new String[]{
+                    Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO},PERMISSION); }
+
         FirebaseApp.initializeApp(this);
 
         ArrayList<Document> documentArrayList = new ArrayList<>();
@@ -105,6 +116,17 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         tv_serviceTime = findViewById(R.id.tv_serviceTime);
         btn_comment_summit=findViewById(R.id.btn_comment_summit);
         comment = findViewById(R.id.comment);
+
+        btn_stt = findViewById(R.id.btn_stt);
+
+        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,getPackageName());
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
+        btn_stt.setOnClickListener(v -> {
+            speechRecognizer=SpeechRecognizer.createSpeechRecognizer(this);
+            speechRecognizer.setRecognitionListener(listener);
+            speechRecognizer.startListening(intent);
+        });
 
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
@@ -239,6 +261,46 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         });
 
     }
+
+    private RecognitionListener listener = new RecognitionListener() {
+        @Override public void onReadyForSpeech(Bundle params) {
+            Toast.makeText(getApplicationContext(),"원하는 장소를 말해주세요",Toast.LENGTH_SHORT).show(); }
+        @Override public void onBeginningOfSpeech() {}
+        @Override public void onRmsChanged(float rmsdB) {}
+        @Override public void onBufferReceived(byte[] buffer) {}
+        @Override public void onEndOfSpeech() {}
+        @Override public void onError(int error) {
+            String message;
+            switch (error) {
+                case SpeechRecognizer.ERROR_INSUFFICIENT_PERMISSIONS:
+                    message = "음성인식 허용이 되지 않았습니다";
+                    break;
+                case SpeechRecognizer.ERROR_NETWORK:
+                case SpeechRecognizer.ERROR_NETWORK_TIMEOUT:
+                    message = "네트워크 상태를 확인해주세요";
+                    break;
+                case SpeechRecognizer.ERROR_NO_MATCH:
+                    message = "다시 한번 정확히 말해주세요";
+                    break;
+                case SpeechRecognizer.ERROR_RECOGNIZER_BUSY:
+                    message = "이미 실행 중입니다";
+                    break;
+                case SpeechRecognizer.ERROR_SPEECH_TIMEOUT:
+                    message = "시간이 초과되었습니다";
+                    break;
+                default: message = "알 수 없는 오류가 발생하였습니다";
+                    break;
+            }
+            Toast.makeText(getApplicationContext(), "error : " + message,Toast.LENGTH_SHORT).show();
+        }
+        @Override public void onResults(Bundle results) {
+            ArrayList<String> matches = results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+            for(int i = 0; i < matches.size() ; i++){
+                editTextQuery.setText(matches.get(i)); } }
+
+        @Override public void onPartialResults(Bundle partialResults) {}
+        @Override public void onEvent(int eventType, Bundle params) {}
+    };
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
