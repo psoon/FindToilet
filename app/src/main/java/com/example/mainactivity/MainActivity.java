@@ -308,12 +308,22 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-            Toast.makeText(this,"위치 권한이 허용되었습니다", Toast.LENGTH_SHORT).show();
-            moveOnCurrentLocation();
+        if(grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION)){
+                Toast.makeText(this, "위치 권한이 허용되었습니다", Toast.LENGTH_SHORT).show();
+                moveOnCurrentLocation();
+            }
+            else if(permissions[0].equals(Manifest.permission.INTERNET) || permissions[0].equals(Manifest.permission.RECORD_AUDIO)){
+                Toast.makeText(this, "마이크 권한이 허용되었습니다", Toast.LENGTH_SHORT).show();
+            }
         }
         else{
-            Toast.makeText(this,"현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+            if(permissions[0].equals(Manifest.permission.ACCESS_FINE_LOCATION)){
+                Toast.makeText(this,"현재 위치를 가져올 수 없습니다.", Toast.LENGTH_SHORT).show();
+            }
+            else if(permissions[0].equals(Manifest.permission.INTERNET) || permissions[0].equals(Manifest.permission.RECORD_AUDIO)){
+                Toast.makeText(this, "마이크를 사용할 수 없습니다.", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
