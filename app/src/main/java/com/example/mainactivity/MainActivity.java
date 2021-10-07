@@ -114,23 +114,6 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         comment = findViewById(R.id.comment);
         btn_stt = findViewById(R.id.btn_stt);
 
-        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
-        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,getPackageName());
-        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
-        btn_stt.setOnClickListener(v -> {
-            if ( Build.VERSION.SDK_INT >= 23 ){
-                int SttPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
-                if (SttPermissionCheck == PackageManager.PERMISSION_DENIED) {
-                    ActivityCompat.requestPermissions(this, new String[]{
-                            Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO},PERMISSION);
-                } else {
-                    speechRecognizer=SpeechRecognizer.createSpeechRecognizer(this);
-                    speechRecognizer.setRecognitionListener(listener);
-                    speechRecognizer.startListening(intent);
-                }
-            }
-        });
-
         LocationAdapter locationAdapter = new LocationAdapter(documentArrayList, getApplicationContext(), editTextQuery, recyclerview);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL));
@@ -148,6 +131,22 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         mapView.setMapViewEventListener(this);
         panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
 
+        intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_CALLING_PACKAGE,getPackageName());
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE,"ko-KR");
+        btn_stt.setOnClickListener(v -> {
+            if ( Build.VERSION.SDK_INT >= 23 ){
+                int SttPermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);
+                if (SttPermissionCheck == PackageManager.PERMISSION_DENIED) {
+                    ActivityCompat.requestPermissions(this, new String[]{
+                            Manifest.permission.INTERNET, Manifest.permission.RECORD_AUDIO},PERMISSION);
+                } else {
+                    speechRecognizer=SpeechRecognizer.createSpeechRecognizer(this);
+                    speechRecognizer.setRecognitionListener(listener);
+                    speechRecognizer.startListening(intent);
+                }
+            }
+        });
         panel.addPanelSlideListener(new SlidingUpPanelLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) { }
@@ -598,7 +597,8 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     @Override
     public void onMapViewInitialized(MapView mapView) { }
     @Override
-    public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) { }
+    public void onMapViewCenterPointMoved(MapView mapView, MapPoint mapPoint) {
+    }
     @Override
     public void onMapViewZoomLevelChanged(MapView mapView, int i) { }
 

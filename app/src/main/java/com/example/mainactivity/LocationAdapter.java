@@ -87,7 +87,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Locati
                     int pos = getAdapterPosition();
                     if(pos != RecyclerView.NO_POSITION){
                         MainActivity.editTextQuery.setText("");
-                        MainActivity.gpsTracker.stopUsingGPS();
+                        if(MainActivity.gpsTracker!=null){
+                            MainActivity.gpsTracker.stopUsingGPS();
+                        }
                         MainActivity.mapView.setCurrentLocationTrackingMode(MapView.CurrentLocationTrackingMode.TrackingModeOff);
                         MainActivity.mapView.removeAllPOIItems();
                         MainActivity.mapView.removeAllCircles();
