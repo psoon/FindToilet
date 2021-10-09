@@ -48,17 +48,18 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_gravity="right" >
+
         <Button
+            android:id="@+id/btn_modify"
             android:layout_width="70dp"
             android:layout_height="30dp"
             android:layout_marginHorizontal="10dp"
-            android:id="@+id/btn_modify"
-            android:textColor="@color/black"
             android:background="@drawable/btn_circle"
             android:drawableLeft="@drawable/modify"
-            android:visibility="invisible"
             android:paddingHorizontal="5dip"
-            android:text="수정"  />
+            android:text="수정"
+            android:textColor="@color/black"
+            android:visibility="invisible" />
         <Button
             android:layout_width="70dp"
             android:layout_height="30dp"

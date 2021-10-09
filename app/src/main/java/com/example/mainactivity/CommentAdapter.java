@@ -244,4 +244,10 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         String time = simpleDateFormat.format(date);
         return time;
     }
+
+
+
+
+
+
 }
