@@ -17,6 +17,7 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -54,6 +55,13 @@ import net.daum.mf.map.api.MapPOIItem;
 import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import retrofit2.Call;
@@ -65,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     RecyclerView recyclerview;
     ImageButton btn_filter, btn_stt;
     FloatingActionButton fab_refresh;
+    FloatingActionButton ystar;
     Button btn_search, btn_favorites,btn_navigation,btn_siren, btn_comment_summit;
     SlidingUpPanelLayout panel;
     TextView location_name, location_addr, tv_gender, tv_serviceTime;
@@ -75,7 +84,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
 
     String [] tvStr = {"대변기수", "소변기수", "장애인 대변기수", "장애인소변기수", "유아용 대변기수", "유아용소변기수", "대변기수", "장애인 대변기수", "유아용대변기수"};
     Integer[] tvId = {R.id.tv_male_toilet, R.id.tv_male_urinal, R.id.tv_male_handiToilet, R.id.tv_male_handiUrinal, R.id.tv_male_kidToilet, R.id.tv_male_kidUrinal,
-                        R.id.tv_female_toilet, R.id.tv_female_handiToilet, R.id.tv_female_kidToilet};
+            R.id.tv_female_toilet, R.id.tv_female_handiToilet, R.id.tv_female_kidToilet};
     public static MapView mapView;
     public static LocationManager lm;
     private static int REQUEST_ACCESS_FINE_LOCATION = 1000;
@@ -101,6 +110,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         recyclerview = findViewById(R.id.main_recyclerview);
         btn_filter = findViewById(R.id.btn_filter);
         fab_refresh= findViewById(R.id.fab_refresh);
+        ystar=findViewById(R.id.ystar);
         btn_search = findViewById(R.id.btnSearch);
         btn_favorites =findViewById(R.id.btn_favorites);
         btn_navigation=findViewById(R.id.btn_navigation);
@@ -154,13 +164,25 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             public void onPanelStateChanged(View panel, SlidingUpPanelLayout.PanelState previousState, SlidingUpPanelLayout.PanelState newState) {
                 if(newState == SlidingUpPanelLayout.PanelState.HIDDEN){
                     fab_refresh.setVisibility(View.VISIBLE);
+                    ystar.setVisibility(View.VISIBLE);
                 }else if(newState == SlidingUpPanelLayout.PanelState.EXPANDED){
                     fab_refresh.setVisibility(View.INVISIBLE);
+                    ystar.setVisibility(View.INVISIBLE);
                 }else if(newState == SlidingUpPanelLayout.PanelState.COLLAPSED){
                     fab_refresh.setVisibility(View.VISIBLE);
+                    ystar.setVisibility(View.VISIBLE);
                 }
             }
         });
+
+        ystar.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), BookMarkActivity.class);
+                startActivity(intent);
+            }
+        });
+
         editTextQuery.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -210,6 +232,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
 
             }
         });
+
         btn_search.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -255,9 +278,8 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             }
         });
 
-        /*
         //즐겨찾기 버튼 누르면 색 변경-위치마다 다르게 수정해야함
-        btn_favorites.setOnClickListener(new View.OnClickListener() {
+        /*btn_favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 btn_favorites.setSelected(!btn_favorites.isSelected());
@@ -464,8 +486,6 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             }
         });
 
-
-
         //길찾기 버튼 클릭
         btn_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -482,12 +502,38 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             @Override
             public void onClick(View view) {
                 if(btn_favorites.isSelected()==true){
-                    //addBookMark("","","");
-                    BookMarkModel bmodel = new BookMarkModel(dataArr[tag][1],dataArr[tag][17],dataArr[tag][18]);
-                    databaseReference.child("bookmarks").child(dataArr[tag][1]).setValue(bmodel);
+                    //삭제
                     btn_favorites.setSelected(!btn_favorites.isSelected());
-                }else {
-                    //delBookMark("","","");
+                }else{
+                    try {
+                        FileOutputStream fos = openFileOutput("bookmark.txt", Context.MODE_APPEND);
+                        FileInputStream fis = openFileInput("bookmark.txt");
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+                        String str=reader.readLine();
+                        PrintWriter writer = new PrintWriter(fos);
+                        String data1 = dataArr[tag][1];
+                        String data2 = dataArr[tag][2];
+                        int flag = 1;
+                        while(str!=null){
+                            if(str.equals(data1)){
+                                Toast.makeText(MainActivity.this, "이미 등록한 화장실입니다.", Toast.LENGTH_SHORT).show();
+                                flag = 0;
+                                break;
+                            }
+                            str=reader.readLine();
+                        }
+                        if(flag==1){
+                            writer.println(data1);
+                            writer.println(data2);
+                        }
+                        writer.close();
+                        reader.close();
+                        Toast.makeText(MainActivity.this, data1+" 즐겨찾기 등록", Toast.LENGTH_SHORT).show();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                    e.printStackTrace();
+                    }
                     btn_favorites.setSelected(!btn_favorites.isSelected());
                 }
             }

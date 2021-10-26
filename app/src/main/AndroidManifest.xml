@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.mainactivity">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -42,6 +43,8 @@
             android:value="d554a2b2e9bcd73aeb57b4f63ccd132d" />
 
         <activity android:name=".Filter" />
+        <activity android:name=".BookMarkActivity"
+            tools:ignore="DuplicateActivity" />
     </application>
 
 </manifest>

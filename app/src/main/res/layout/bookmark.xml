@@ -1,21 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
-    android:layout_height="match_parent">
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center"
-    android:background="@drawable/favorite1">
-    <TextView
-        android:layout_width="wrap_content"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="16dp"
-        android:drawableLeft="@drawable/ystar"
-        android:drawableRight="@drawable/ystar"
-        android:text="즐겨찾기"
-        android:textSize="30sp" />
+        android:gravity="center"
+        android:background="@drawable/favorite1">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginVertical="16dp"
+            android:drawableLeft="@drawable/ystar"
+            android:drawableRight="@drawable/ystar"
+            android:text="즐겨찾기"
+            android:textSize="30sp" />
 
-</LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/bookmarklist"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <!--
+        <TextView
+            android:id="@+id/tname"
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="화장실이름"
+            android:textSize="25sp" />
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="화장실 주소"
+            android:textSize="15sp" />-->
+    </LinearLayout>
 
 </LinearLayout>
