@@ -254,13 +254,15 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                 mapView.setPOIItemEventListener(MainActivity.this);
             }
         });
+
+        /*
         //즐겨찾기 버튼 누르면 색 변경-위치마다 다르게 수정해야함
         btn_favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 btn_favorites.setSelected(!btn_favorites.isSelected());
             }
-        });
+        });*/
 
     }
 
@@ -474,6 +476,24 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                 startActivity(openURL);
             }
         });
+
+        //즐겨찾기 버튼 클릭
+        btn_favorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(btn_favorites.isSelected()==true){
+                    //addBookMark("","","");
+                    BookMarkModel bmodel = new BookMarkModel(dataArr[tag][1],dataArr[tag][17],dataArr[tag][18]);
+                    databaseReference.child("bookmarks").child(dataArr[tag][1]).setValue(bmodel);
+                    btn_favorites.setSelected(!btn_favorites.isSelected());
+                }else {
+                    //delBookMark("","","");
+                    btn_favorites.setSelected(!btn_favorites.isSelected());
+                }
+            }
+        });
+
+        //신고 버튼 클릭
         btn_siren.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

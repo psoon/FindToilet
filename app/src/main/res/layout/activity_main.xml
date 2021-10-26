@@ -111,8 +111,6 @@
                         android:gravity="center"
                         android:orientation="horizontal">
 
-
-
                         <Button
                             android:layout_width="130dp"
                             android:layout_height="wrap_content"
@@ -413,6 +411,18 @@
                 </LinearLayout>
             </LinearLayout>
         </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/ystar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left|bottom"
+            android:layout_margin="30dp"
+            android:backgroundTint="#ffffff"
+            app:tint="@null"
+            app:borderWidth="0dp"
+            android:src="@drawable/ystar"/>
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_refresh"
             android:layout_width="wrap_content"
