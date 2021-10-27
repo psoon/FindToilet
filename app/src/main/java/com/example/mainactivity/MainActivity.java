@@ -56,11 +56,14 @@ import net.daum.mf.map.api.MapPoint;
 import net.daum.mf.map.api.MapView;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -441,6 +444,19 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     public void onPOIItemSelected(MapView mapView, MapPOIItem mapPOIItem) {
         int tag = mapPOIItem.getTag();
         try{
+            FileInputStream fis = openFileInput("bookmark.txt");
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
+            String line = "";
+            boolean isIn = false;
+            while((line=reader.readLine()) != null) {
+                if(line.equals(Integer.toString(tag))){
+                    isIn = true;
+                }
+            }
+            if(isIn) btn_favorites.setSelected(true);
+            else btn_favorites.setSelected(false);
+        }catch(Exception e){ }
+        try{
             panel.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
             location_name.setText(dataArr[tag][1]);
             if(dataArr[tag][2]!=null && !dataArr[tag][2].equals("")){
@@ -497,44 +513,50 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             }
         });
 
+
         //즐겨찾기 버튼 클릭
         btn_favorites.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(btn_favorites.isSelected()==true){
-                    //삭제
-                    btn_favorites.setSelected(!btn_favorites.isSelected());
-                }else{
-                    try {
-                        FileOutputStream fos = openFileOutput("bookmark.txt", Context.MODE_APPEND);
+                if(btn_favorites.isSelected()){
+                    String favoriteList = "";
+                    try{
                         FileInputStream fis = openFileInput("bookmark.txt");
                         BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
-                        String str=reader.readLine();
-                        PrintWriter writer = new PrintWriter(fos);
-                        String data1 = dataArr[tag][1];
-                        String data2 = dataArr[tag][2];
-                        int flag = 1;
-                        while(str!=null){
-                            if(str.equals(data1)){
-                                Toast.makeText(MainActivity.this, "이미 등록한 화장실입니다.", Toast.LENGTH_SHORT).show();
-                                flag = 0;
-                                break;
+
+                        String line;
+
+                        while((line=reader.readLine())!=null){
+                            if(line.equals(Integer.toString(tag))){
+                                continue;
                             }
-                            str=reader.readLine();
+                            favoriteList += (line+"\n");
                         }
-                        if(flag==1){
-                            writer.println(data1);
-                            writer.println(data2);
-                        }
-                        writer.close();
+                        FileWriter fw = new FileWriter(getFilesDir()+"/bookmark.txt");
+                        fw.write(favoriteList);
+
+                        btn_favorites.setSelected(false);
+                        Toast.makeText(getApplicationContext(), "즐겨찾기에서 삭제되었습니다", Toast.LENGTH_SHORT).show();
+
+                        fw.close();
                         reader.close();
-                        Toast.makeText(MainActivity.this, data1+" 즐겨찾기 등록", Toast.LENGTH_SHORT).show();
-                    } catch (FileNotFoundException e) {
-                        e.printStackTrace();
-                    } catch (IOException e) {
-                    e.printStackTrace();
+                        fis.close();
                     }
-                    btn_favorites.setSelected(!btn_favorites.isSelected());
+                    catch(Exception e){Toast.makeText(getApplicationContext(), e.toString(), Toast.LENGTH_SHORT).show();}
+                }
+                else{
+                    try{
+                        FileOutputStream fos = openFileOutput("bookmark.txt", Context.MODE_APPEND);
+                        PrintWriter writer = new PrintWriter(fos);
+
+                        String favoriteList = Integer.toString(tag) + "\n";
+                        writer.write(favoriteList);
+                        Toast.makeText(MainActivity.this, "즐겨찾기가 등록되었습니다.", Toast.LENGTH_SHORT).show();
+                        btn_favorites.setSelected(true);
+
+                        writer.close();
+                        fos.close();
+                    } catch(Exception e){ }
                 }
             }
         });

@@ -18,25 +18,11 @@
             android:textSize="30sp" />
 
     </LinearLayout>
-    <LinearLayout
+    <ListView
         android:id="@+id/bookmarklist"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <!--
-        <TextView
-            android:id="@+id/tname"
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="화장실이름"
-            android:textSize="25sp" />
-        <TextView
-            android:gravity="center"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="화장실 주소"
-            android:textSize="15sp" />-->
-    </LinearLayout>
+        android:layout_height="wrap_content">
+
+    </ListView>
 
 </LinearLayout>
