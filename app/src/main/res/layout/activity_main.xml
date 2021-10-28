@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -22,7 +24,6 @@
             android:hint="장소를 검색하세요"
             android:layout_weight="1"
             android:id="@+id/editTextQuery">
-            <requestFocus/>
         </EditText>
         <ImageButton
             android:layout_width="40dp"

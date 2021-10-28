@@ -113,6 +113,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     Toast.makeText(view.getContext(), "삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                                    FirebaseDatabase.getInstance().getReference().child("Toilet_Comment").child(MainActivity.dataArr[Integer.parseInt(model.toiletNum)][1]).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                            items.clear();
+                                            for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                                                items.add(dataSnapshot.getValue(CommentModel.class));
+                                            }
+                                            notifyDataSetChanged();
+                                        }
+                                    });
                                     notifyDataSetChanged();
                                 }
                             });
@@ -149,6 +159,7 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
 
                                         model.createAt = ServerValue.TIMESTAMP;
                                         model.content = str;
+
                                         databaseReference.child("Toilet_Comment").child(MainActivity.dataArr[Integer.parseInt(model.toiletNum)][1]).child(model.content).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
                                             @Override
                                             public void onComplete(@NonNull Task<Void> task) {
@@ -156,6 +167,16 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                                                 try{
                                                     Thread.sleep(500);
                                                 }catch(Exception e){ }
+                                                FirebaseDatabase.getInstance().getReference().child("Toilet_Comment").child(MainActivity.dataArr[Integer.parseInt(model.toiletNum)][1]).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                                        items.clear();
+                                                        for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                                                            items.add(dataSnapshot.getValue(CommentModel.class));
+                                                        }
+                                                        notifyDataSetChanged();
+                                                    }
+                                                });
                                                 notifyDataSetChanged();
                                             }
                                         });
@@ -244,10 +265,5 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         String time = simpleDateFormat.format(date);
         return time;
     }
-
-
-
-
-
 
 }

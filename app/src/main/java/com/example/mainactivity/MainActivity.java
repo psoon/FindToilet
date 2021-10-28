@@ -1,10 +1,13 @@
 package com.example.mainactivity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Color;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -17,8 +20,11 @@ import android.speech.RecognizerIntent;
 import android.speech.SpeechRecognizer;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -65,7 +71,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.TimeZone;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -83,6 +94,8 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     EditText comment;
     Intent intent;
     SpeechRecognizer speechRecognizer;
+    CommentAdapter commentAdapter;
+    RecyclerView comment_recyclerview;
     final int PERMISSION = 1;
 
     String [] tvStr = {"대변기수", "소변기수", "장애인 대변기수", "장애인소변기수", "유아용 대변기수", "유아용소변기수", "대변기수", "장애인 대변기수", "유아용대변기수"};
@@ -139,6 +152,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         lm = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         //화면구성 및 변수 초기화
 
+
         askPermission();
         mapView.setPOIItemEventListener(this);
         mapView.setMapViewEventListener(this);
@@ -168,16 +182,24 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                 if(newState == SlidingUpPanelLayout.PanelState.HIDDEN){
                     fab_refresh.setVisibility(View.VISIBLE);
                     ystar.setVisibility(View.VISIBLE);
+                    if(comment_recyclerview!=null){
+                        comment_recyclerview.setVisibility(View.GONE);
+                    }
                 }else if(newState == SlidingUpPanelLayout.PanelState.EXPANDED){
                     fab_refresh.setVisibility(View.INVISIBLE);
                     ystar.setVisibility(View.INVISIBLE);
+                    if(comment_recyclerview!=null){
+                        comment_recyclerview.setVisibility(View.VISIBLE);
+                    }
                 }else if(newState == SlidingUpPanelLayout.PanelState.COLLAPSED){
                     fab_refresh.setVisibility(View.VISIBLE);
                     ystar.setVisibility(View.VISIBLE);
+                    if(comment_recyclerview!=null){
+                        comment_recyclerview.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         });
-
         ystar.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -483,15 +505,14 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
 
         //댓글 불러오기 구현
         ArrayList<CommentModel> commentArrayList = new ArrayList<>();
-        RecyclerView comment_recyclerview = findViewById(R.id.recyclerView_comment);
+        comment_recyclerview = findViewById(R.id.recyclerView_comment);
 
-        CommentAdapter commentAdapter = new CommentAdapter(commentArrayList, MainActivity.this, comment_recyclerview);
+        commentAdapter = new CommentAdapter(commentArrayList, MainActivity.this, comment_recyclerview);
         comment_recyclerview.addItemDecoration(new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.HORIZONTAL));
         LinearLayoutManager layoutManager2 = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         comment_recyclerview.setLayoutManager(layoutManager2);
         comment_recyclerview.setAdapter(commentAdapter);
 
-        commentAdapter.notifyDataSetChanged();
         FirebaseDatabase.getInstance().getReference().child("Toilet_Comment").child(dataArr[tag][1]).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DataSnapshot> task) {
@@ -501,7 +522,6 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                 commentAdapter.notifyDataSetChanged();
             }
         });
-
         //길찾기 버튼 클릭
         btn_navigation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -660,12 +680,23 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                         public void onComplete(@NonNull Task<DataSnapshot> task) {
                             String value = task.getResult().getValue(String.class);
                             commentModel.userName = value;
+                            commentAdapter.addItem(commentModel);
                             databaseReference.child("Toilet_Comment").child(dataArr[tag][1]).child(comment.getText().toString()).setValue(commentModel).addOnCompleteListener(new OnCompleteListener<Void>() {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     Toast.makeText(MainActivity.this, "댓글이 작성되었습니다.", Toast.LENGTH_SHORT).show();
                                     comment.setText("");
-                                    commentAdapter.notifyDataSetChanged();
+
+                                    commentArrayList.clear();
+                                    FirebaseDatabase.getInstance().getReference().child("Toilet_Comment").child(dataArr[tag][1]).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<DataSnapshot> task) {
+                                            for(DataSnapshot dataSnapshot : task.getResult().getChildren()){
+                                                commentAdapter.addItem(dataSnapshot.getValue(CommentModel.class));
+                                            }
+                                            commentAdapter.notifyDataSetChanged();
+                                        }
+                                    });
                                 }
                             });
                         }
@@ -675,7 +706,6 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         });
 
     }
-
     @Override
     public void onCalloutBalloonOfPOIItemTouched(MapView mapView, MapPOIItem mapPOIItem) { }
     @Override
@@ -693,6 +723,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
     @Override
     public void onMapViewSingleTapped(MapView mapView, MapPoint mapPoint) {
         panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+
     }
 
     @Override
@@ -748,5 +779,4 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
         mAuth.signOut();
         super.onDestroy();
     }
-
 }
