@@ -212,6 +212,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
             @Override
             public void onClick(View view) {
                 panel.setPanelState(SlidingUpPanelLayout.PanelState.HIDDEN);
+                comment_recyclerview.setVisibility(View.GONE);
             }
         });
         editTextQuery.addTextChangedListener(new TextWatcher() {
@@ -300,6 +301,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                 mapViewContainer.addView(mapView);
                 moveOnCurrentLocation();
                 mapView.setPOIItemEventListener(MainActivity.this);
+                mapView.setMapViewEventListener(MainActivity.this);
             }
         });
 
@@ -596,12 +598,12 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                                 .setPositiveButton("확인", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i) {
-                                        EditText et_report = findViewById(R.id.et_report);
+                                        EditText et_report = linearLayout.findViewById(R.id.et_report);
                                         CommentModel model = new CommentModel();
                                         try{
                                             model.content = et_report.getText().toString();
                                         }catch(Exception e){
-                                            Toast.makeText(MainActivity.this, "공백 혹은 잘못된 입력입니다.", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MainActivity.this, e.toString() + "공백 혹은 잘못된 입력입니다.", Toast.LENGTH_SHORT).show();
                                             return;
                                         }
                                         model.createAt = ServerValue.TIMESTAMP;
@@ -609,9 +611,7 @@ public class MainActivity extends AppCompatActivity implements MapView.POIItemEv
                                             try{
                                                 model.uid = user.getUid();
                                                 model.userName =  databaseReference.child("Users").child(user.getUid()).child("nickName").get().getResult().getValue(String.class);
-                                            }catch(Exception e ){
-                                                Toast.makeText(MainActivity.this, "실패하였습니다.", Toast.LENGTH_SHORT).show();
-                                            }
+                                            }catch(Exception e ){ }
                                         }
                                         model.toiletNum = Integer.toString(tag);
                                         databaseReference.child("Report").child(dataArr[tag][1]).child(model.content).setValue(model).addOnCompleteListener(new OnCompleteListener<Void>() {
